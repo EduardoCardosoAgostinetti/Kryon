@@ -9,28 +9,28 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: ${{ secrets.DB_NAME }}
-          POSTGRES_USER: ${{ secrets.DB_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASS }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U ${{ secrets.DB_USER }}"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-    env:
+    env: # <-- Secrets definidos aqui
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASS: ${{ secrets.DB_PASS }}
       DB_HOST: localhost
       DB_PORT: 5432
       API_PORT: 3001
+
+    services:
+      postgres:
+        image: postgres:15
+        env: # usa as variáveis já expandidas
+          POSTGRES_DB: $DB_NAME
+          POSTGRES_USER: $DB_USER
+          POSTGRES_PASSWORD: $DB_PASS
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U $DB_USER"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - uses: actions/checkout@v4
