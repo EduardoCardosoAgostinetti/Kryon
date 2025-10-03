@@ -121,8 +121,8 @@ function SignUp() {
           padding: 12px 14px;
           border-radius: 8px;
           border: 1px solid #3a3a3f;
-          background: #000000;
-          color: #fff;
+          background: #ffffffff;
+          color: #000000ff;
           font-size: 1rem;
         }
 
