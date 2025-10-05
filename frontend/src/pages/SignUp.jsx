@@ -1,23 +1,79 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../config/api";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import Alerts from "../components/Alerts";
+import Loading from "../components/Loading";
 
 function SignUp() {
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const fullName = e.target.name.value.trim();
+    const username = e.target.username.value.trim();
+    const email = e.target.email.value.trim();
+    const password = e.target.password.value;
+    const confirmPassword = e.target["confirm-password"].value;
+    const terms = e.target.terms.checked;
+
+    if (!terms) {
+      setAlert({ type: "error", message: "You must accept the terms of use." });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data } = await api.post("/user/register", {
+        fullName,
+        username,
+        email,
+        password,
+        confirmPassword,
+      });
+
+      setAlert({ type: "success", message: data.message });
+      console.log(data);
+    } catch (error) {
+      if (error.response) {
+        setAlert({ type: "error", message: error.response.data.message });
+        console.log(error.response.data);
+      } else {
+        setAlert({ type: "error", message: "Server connection error." });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Navbar />
+      {loading && <Loading message="Creating your account..." />}
+      {alert.message && (
+        <Alerts
+          type={alert.type}
+          message={alert.message}
+          onClose={() => {
+            setAlert({ type: "", message: "" });
+            if (alert.type === "success") navigate("/signin");
+          }}
+        />
+      )}
+
       <div className="signup-container">
         <div className="signup-card">
           <h2>Create Account</h2>
 
-          <form
-            className="signup-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
+          <form className="signup-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="name">Full Name</label>
-              <input id="name" type="text" placeholder="Enter your name" />
+              <input id="name" type="text" placeholder="Enter your full name" />
             </div>
 
             <div className="form-group">
@@ -145,7 +201,7 @@ function SignUp() {
         }
 
         .form-check input {
-          accent-color: #ff7f50; /* checkbox color */
+          accent-color: #ff7f50;
         }
 
         .form-check a {

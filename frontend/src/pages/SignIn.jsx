@@ -1,20 +1,67 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../config/api";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import Alerts from "../components/Alerts";
+import Loading from "../components/Loading";
 
 function SignIn() {
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const email = e.target.email.value.trim();
+    const password = e.target.password.value;
+
+    if (!email || !password) {
+      setAlert({ type: "error", message: "Please fill in all fields." });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data } = await api.post("/user/login", { email, password });
+      setAlert({ type: "success", message: data.message });
+      console.log(data);
+    } catch (error) {
+      if (error.response) {
+        setAlert({ type: "error", message: error.response.data.message });
+        console.log(error.response.data);
+      } else {
+        setAlert({ type: "error", message: "Server connection error." });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Navbar />
+      {loading && <Loading message="Logging into your account..." />}
+      {alert.message && (
+        <Alerts
+          type={alert.type}
+          message={alert.message}
+          onClose={() => {
+            if (alert.type === "success") {
+              navigate("/"); // redirect after login
+            }
+            setAlert({ type: "", message: "" });
+          }}
+        />
+      )}
+
       <div className="signin-container">
         <div className="signin-card">
           <h2>Sign In</h2>
 
-          <form
-            className="signin-form"
-            onSubmit={(e) => {
-              e.preventDefault(); // prevent reload while testing
-            }}
-          >
+          <form className="signin-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input id="email" type="email" placeholder="Enter your email" />
@@ -43,6 +90,7 @@ function SignIn() {
 
       <style>
         {`
+        /* Container for the sign-in card */
         .signin-container {
           display: flex;
           justify-content: center;
@@ -51,6 +99,7 @@ function SignIn() {
           min-height: 70vh;
         }
 
+        /* Sign-in card styling */
         .signin-card {
           background: #282c34;
           padding: 36px;
@@ -111,6 +160,7 @@ function SignIn() {
           border-color: #ff7f50;
         }
 
+        /* Login button styling */
         .login-btn {
           display: inline-block;
           width: 100%;
@@ -130,6 +180,7 @@ function SignIn() {
           background: #ff946b;
         }
 
+        /* Links below the form */
         .signin-links {
           margin-top: 14px;
           font-size: 0.9rem;
