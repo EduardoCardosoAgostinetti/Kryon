@@ -52,7 +52,7 @@ jobs:
           done
 
       - name: Run Register Tests
-        run: npx jest tests/registerroutes.test.js
+        run: npx jest tests/register_route.test.js
         working-directory: ./backend
 
   test-login:
@@ -102,5 +102,5 @@ jobs:
           done
 
       - name: Run Login Tests
-        run: npx jest tests/login_routes.test.js
+        run: npx jest tests/login_route.test.js
         working-directory: ./backend

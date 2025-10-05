@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 beforeAll(async () => {
   await sequelize.sync({ force: true });
 
-  // Cria um usuário para os testes de login
+  
   const hashedPassword = await bcrypt.hash("senha123", 10);
   await User.create({
     fullName: "Joao Da Silva 2",
