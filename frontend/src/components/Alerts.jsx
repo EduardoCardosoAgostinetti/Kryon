@@ -46,7 +46,7 @@ const Alerts = ({ type, message, onClose }) => {
                     onMouseOver={(e) => (e.target.style.backgroundColor = btnHover)}
                     onMouseOut={(e) => (e.target.style.backgroundColor = btnBg)}
                 >
-                    Fechar
+                    Close
                 </button>
             </div>
 

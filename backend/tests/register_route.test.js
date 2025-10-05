@@ -14,9 +14,9 @@ afterAll(async () => {
 
 describe("POST /user/register", () => {
   const validUser = {
-    fullName: "joao da silva",
-    username: "joaosilva",
-    email: "joao@email.com",
+    fullName: "joao da silva 1",
+    username: "joaosilva 1",
+    email: "joao1@email.com",
     password: "senha123",
     confirmPassword: "senha123"
   };
@@ -29,7 +29,7 @@ describe("POST /user/register", () => {
     expect(res.body.success).toBe(true);
     expect(res.body.code).toBe("USER_CREATED_SUCCESS");
     expect(res.body.data).toHaveProperty("id");
-    expect(res.body.data.fullName).toBe("Joao Da Silva");
+    expect(res.body.data.fullName).toBe("Joao Da Silva 1");
     expect(res.body.data.username).toBe(validUser.username);
     expect(res.body.data.email).toBe(validUser.email);
   });
