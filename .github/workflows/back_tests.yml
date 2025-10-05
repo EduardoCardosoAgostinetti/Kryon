@@ -1,4 +1,4 @@
-name: Routes Tests
+name: Backend Tests
 
 on:
   push:
