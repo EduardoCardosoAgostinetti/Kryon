@@ -66,6 +66,7 @@ jobs:
       DB_HOST: localhost
       DB_PORT: 5432
       API_PORT: 3001
+      JWT_SECRET: root
 
     services:
       postgres:
