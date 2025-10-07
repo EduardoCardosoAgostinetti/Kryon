@@ -26,7 +26,11 @@ function SignIn() {
 
     try {
       const { data } = await api.post("/user/login", { email, password });
-      setAlert({ type: "success", message: data.message });
+      console.log(data);
+
+      localStorage.setItem("token", data.token);
+
+      navigate("/dashboard");
       console.log(data);
     } catch (error) {
       if (error.response) {
@@ -49,9 +53,6 @@ function SignIn() {
           type={alert.type}
           message={alert.message}
           onClose={() => {
-            if (alert.type === "success") {
-              navigate("/"); // redirect after login
-            }
             setAlert({ type: "", message: "" });
           }}
         />

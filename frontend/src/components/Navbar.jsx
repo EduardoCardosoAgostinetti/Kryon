@@ -1,21 +1,63 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Home, LayoutDashboard, LogIn, UserPlus, LogOut } from "lucide-react";
 import WhiteLogo from "../assets/LogoKryonWhite.png";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLogged(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLogged(false);
+    navigate("/signin");
+  };
 
   return (
     <>
       <nav className="navbar">
-        <div className="logo">
+        <div className="logo" onClick={() => navigate("/")}>
           <img src={WhiteLogo} alt="Kryon Logo" />
         </div>
+
         <div className={`links ${isOpen ? "open" : ""}`}>
-          <Link to="/" className="nav-btn">Home</Link>
-          <Link to="/signin" className="nav-btn">Sign In</Link>
-          <Link to="/signup" className="nav-btn signup">Sign Up</Link>
+          <Link to="/" className="nav-btn">
+            <Home size={18} />
+            <span>Home</span>
+          </Link>
+
+          {isLogged ? (
+            <>
+              <Link to="/dashboard" className="nav-btn">
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
+              </Link>
+
+              <button onClick={handleLogout} className="nav-btn logout">
+                <LogOut size={18} />
+                <span>Logout</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/signin" className="nav-btn">
+                <LogIn size={18} />
+                <span>Sign In</span>
+              </Link>
+              <Link to="/signup" className="nav-btn signup">
+                <UserPlus size={18} />
+                <span>Sign Up</span>
+              </Link>
+            </>
+          )}
         </div>
+
         <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
           ☰
         </button>
@@ -43,25 +85,44 @@ function Navbar() {
             gap: 10px;
           }
 
-          .nav-btn {
-            padding: 8px 16px;
-            border-radius: 5px;
+          .navbar .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 6px;
             background-color: #444;
             color: white;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
           }
 
-          .nav-btn:hover {
+          .navbar .nav-btn:hover {
             background-color: #555;
+            transform: translateY(-2px);
           }
 
-          .nav-btn.signup {
+          .navbar .nav-btn.signup {
             background-color: #ff7f50;
           }
 
-          .nav-btn.signup:hover {
+          .navbar .nav-btn.signup:hover {
             background-color: #ff946b;
+          }
+
+          .navbar .nav-btn.logout {
+            background-color: #b93b3b;
+          }
+
+          .navbar .nav-btn.logout:hover {
+            background-color: #d34d4d;
+          }
+
+          .nav-btn svg {
+            flex-shrink: 0;
           }
 
           .menu-toggle {
@@ -73,7 +134,6 @@ function Navbar() {
             cursor: pointer;
           }
 
-          /* Responsivo */
           @media (max-width: 600px) {
             .links {
               display: none;
@@ -85,6 +145,7 @@ function Navbar() {
               background-color: #282c34;
               padding: 10px;
               border-radius: 5px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             }
 
             .links.open {
@@ -93,6 +154,11 @@ function Navbar() {
 
             .menu-toggle {
               display: block;
+            }
+
+            .nav-btn {
+              justify-content: flex-start;
+              width: 160px;
             }
           }
         `}
