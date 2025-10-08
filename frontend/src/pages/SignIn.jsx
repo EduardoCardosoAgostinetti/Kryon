@@ -79,7 +79,7 @@ function SignIn() {
           </form>
 
           <div className="signin-links">
-            <a href="#">Forgot your password?</a>
+            <a href="/forgot-password">Forgot your password?</a>
             <p>
               Don’t have an account? <a href="/signup">Sign Up</a>
             </p>

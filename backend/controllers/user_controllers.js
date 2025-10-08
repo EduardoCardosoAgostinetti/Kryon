@@ -3,6 +3,7 @@ const { sequelize } = require("../config/database");
 const apiResponse = require("../config/api_response");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const { Op } = require("sequelize");
 
 
@@ -18,6 +19,46 @@ function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
+
+async function sendResetEmail(toEmail, resetToken) {
+  // Configura o transportador SMTP (use suas credenciais reais)
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT || 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+  // Link de redefinição (ajuste conforme sua rota frontend)
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+  // Corpo do e-mail
+  const mailOptions = {
+    from: `"Suporte - Kryon" <${process.env.SMTP_USER}>`,
+    to: toEmail,
+    subject: "Redefinição de senha",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 500px;">
+        <h2>Redefinição de senha</h2>
+        <p>Você solicitou a redefinição da sua senha. Clique no botão abaixo para criar uma nova:</p>
+        <a href="${resetLink}" 
+           style="display:inline-block;background:#007bff;color:#fff;padding:10px 20px;
+                  border-radius:5px;text-decoration:none;margin-top:10px;">
+          Redefinir senha
+        </a>
+        <p style="margin-top:20px;">Se você não solicitou essa ação, ignore este e-mail.</p>
+        <hr>
+        <small>Link válido por 15 minutos.</small>
+      </div>
+    `
+  };
+
+  // Envia o e-mail
+  await transporter.sendMail(mailOptions);
+}
+
 exports.createUser = async (req, res) => {
   try {
     let { fullName, username, email, password, confirmPassword } = req.body;
@@ -109,5 +150,86 @@ exports.loginUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     return apiResponse(res, false, "SERVER_ERROR", "Error logging in.", null, 500);
+  }
+};
+
+// 🔹 Controller: Forgot Password
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // 1️⃣ Validações
+    if (!email)
+      return apiResponse(res, false, "MISSING_EMAIL", "The 'Email' field is required.", null, 400);
+    if (!isValidEmail(email))
+      return apiResponse(res, false, "INVALID_EMAIL", "The provided email is not valid.", null, 400);
+
+    // 2️⃣ Verifica se o usuário existe
+    const user = await User.findOne({ where: { email } });
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "No user found with this email.", null, 404);
+
+    // 3️⃣ Gera token (expira em 15 min)
+    const resetToken = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    // 4️⃣ Envia o e-mail
+    await sendResetEmail(user.email, resetToken);
+
+    return apiResponse(
+      res,
+      true,
+      "RESET_EMAIL_SENT",
+      "Password reset email sent successfully.",
+      null,
+      200
+    );
+
+  } catch (error) {
+    console.error(error);
+    return apiResponse(res, false, "SERVER_ERROR", "Error sending reset email.", null, 500);
+  }
+};
+
+
+// 🔹 Controller: Reset Password
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword, confirmPassword } = req.body;
+
+    if (!token)
+      return apiResponse(res, false, "MISSING_TOKEN", "The 'Token' field is required.", null, 400);
+    if (!newPassword)
+      return apiResponse(res, false, "MISSING_NEW_PASSWORD", "The 'New Password' field is required.", null, 400);
+    if (!confirmPassword)
+      return apiResponse(res, false, "MISSING_CONFIRM_PASSWORD", "The 'Confirm Password' field is required.", null, 400);
+    if (newPassword !== confirmPassword)
+      return apiResponse(res, false, "PASSWORD_MISMATCH", "Passwords do not match.", null, 400);
+
+    // Verifica o token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return apiResponse(res, false, "INVALID_TOKEN", "The provided token is invalid or expired.", null, 401);
+    }
+
+    // Busca usuário
+    const user = await User.findByPk(decoded.id);
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+
+    // Atualiza senha
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await user.update({ password: hashedPassword });
+
+    return apiResponse(res, true, "PASSWORD_RESET_SUCCESS", "Password reset successfully.", null, 200);
+
+  } catch (error) {
+    console.error(error);
+    return apiResponse(res, false, "SERVER_ERROR", "Error resetting password.", null, 500);
   }
 };
