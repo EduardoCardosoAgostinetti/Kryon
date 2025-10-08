@@ -28,9 +28,9 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: kryon
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: root
         ports:
           - 5432:5432
         options: >-
