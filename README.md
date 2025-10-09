@@ -52,9 +52,6 @@ kryon/
 
 ---
 
-
----
-
 ## 🧩 `.env` File
 
 The `.env` file should contain the following environment variables:
@@ -123,16 +120,16 @@ FRONTEND_URL=http://localhost:5173
 
 | Código | Tipo de Erro | Mensagem | HTTP Status |
 |:------:|---------------|-----------|--------------|
-| MISSING_FULLNAME | Campo ausente | The 'Full Name' field is required. | 400 |
-| MISSING_USERNAME | Campo ausente | The 'Username' field is required. | 400 |
-| MISSING_EMAIL | Campo ausente | The 'Email' field is required. | 400 |
-| INVALID_EMAIL | E-mail inválido | The provided email is not valid. | 400 |
-| MISSING_PASSWORD | Campo ausente | The 'Password' field is required. | 400 |
-| MISSING_CONFIRM_PASSWORD | Campo ausente | The 'ConfirmPassword' field is required. | 400 |
-| PASSWORD_MISMATCH | Senhas diferentes | Passwords do not match. | 400 |
-| EMAIL_EXISTS | E-mail já cadastrado | The provided email is already in use. | 409 |
-| USERNAME_EXISTS | Username já cadastrado | The provided username is already in use. | 409 |
-| SERVER_ERROR | Erro interno | Error creating user. | 500 |
+| MISSING_FULLNAME | Missing field | The 'Full Name' field is required. | 400 |
+| MISSING_USERNAME | Missing field | The 'Username' field is required. | 400 |
+| MISSING_EMAIL | Missing field | The 'Email' field is required. | 400 |
+| INVALID_EMAIL | Invalid email | The provided email is not valid. | 400 |
+| MISSING_PASSWORD | Missing field | The 'Password' field is required. | 400 |
+| MISSING_CONFIRM_PASSWORD | Missing field | The 'ConfirmPassword' field is required. | 400 |
+| PASSWORD_MISMATCH | Passwords do not match | Passwords do not match. | 400 |
+| EMAIL_EXISTS | Email already exists | The provided email is already in use. | 409 |
+| USERNAME_EXISTS | Username already exists | The provided username is already in use. | 409 |
+| SERVER_ERROR | Internal error | Error creating user. | 500 |
 
 ---
 
@@ -140,12 +137,12 @@ FRONTEND_URL=http://localhost:5173
 
 | Código | Tipo de Erro | Mensagem | HTTP Status |
 |:------:|---------------|-----------|--------------|
-| MISSING_EMAIL | Campo ausente | The 'Email' field is required. | 400 |
-| INVALID_EMAIL | E-mail inválido | The provided email is not valid. | 400 |
-| MISSING_PASSWORD | Campo ausente | The 'Password' field is required. | 400 |
-| USER_NOT_FOUND | Usuário não encontrado | No user found with this email. | 404 |
-| INVALID_PASSWORD | Senha incorreta | Incorrect password. | 401 |
-| SERVER_ERROR | Erro interno | Error logging in. | 500 |
+| MISSING_EMAIL | Missing field | The 'Email' field is required. | 400 |
+| INVALID_EMAIL | Invalid email | The provided email is not valid. | 400 |
+| MISSING_PASSWORD | Missing field | The 'Password' field is required. | 400 |
+| USER_NOT_FOUND | User not found | No user found with this email. | 404 |
+| INVALID_PASSWORD | Incorrect password | Incorrect password. | 401 |
+| SERVER_ERROR | Internal error | Error logging in. | 500 |
 
 ---
 
@@ -153,10 +150,10 @@ FRONTEND_URL=http://localhost:5173
 
 | Código | Tipo de Erro | Mensagem | HTTP Status |
 |:------:|---------------|-----------|--------------|
-| MISSING_EMAIL | Campo ausente | The 'Email' field is required. | 400 |
-| INVALID_EMAIL | E-mail inválido | The provided email is not valid. | 400 |
-| USER_NOT_FOUND | Usuário não encontrado | No user found with this email. | 404 |
-| SERVER_ERROR | Erro interno | Error sending reset email. | 500 |
+| MISSING_EMAIL | Missing field | The 'Email' field is required. | 400 |
+| INVALID_EMAIL | Invalid email | The provided email is not valid. | 400 |
+| USER_NOT_FOUND | User not found | No user found with this email. | 404 |
+| SERVER_ERROR | Internal error | Error sending reset email. | 500 |
 
 ---
 
@@ -164,13 +161,13 @@ FRONTEND_URL=http://localhost:5173
 
 | Código | Tipo de Erro | Mensagem | HTTP Status |
 |:------:|---------------|-----------|--------------|
-| MISSING_TOKEN | Campo ausente | The 'Token' field is required. | 400 |
-| MISSING_NEW_PASSWORD | Campo ausente | The 'New Password' field is required. | 400 |
-| MISSING_CONFIRM_PASSWORD | Campo ausente | The 'Confirm Password' field is required. | 400 |
-| PASSWORD_MISMATCH | Senhas diferentes | Passwords do not match. | 400 |
-| INVALID_TOKEN | Token inválido ou expirado | The provided token is invalid or expired. | 401 |
-| USER_NOT_FOUND | Usuário não encontrado | User not found. | 404 |
-| SERVER_ERROR | Erro interno | Error resetting password. | 500 |
+| MISSING_TOKEN | Missing field | The 'Token' field is required. | 400 |
+| MISSING_NEW_PASSWORD | Missing field | The 'New Password' field is required. | 400 |
+| MISSING_CONFIRM_PASSWORD | Missing field | The 'Confirm Password' field is required. | 400 |
+| PASSWORD_MISMATCH | Passwords do not match | Passwords do not match. | 400 |
+| INVALID_TOKEN | Invalid or expired token | The provided token is invalid or expired. | 401 |
+| USER_NOT_FOUND | User not found | User not found. | 404 |
+| SERVER_ERROR | Internal error | Error resetting password. | 500 |
 
 ---
 
@@ -178,10 +175,10 @@ FRONTEND_URL=http://localhost:5173
 
 | Código | Descrição | HTTP Status |
 |:------:|------------|--------------|
-| USER_CREATED_SUCCESS | Usuário criado com sucesso | 201 |
-| LOGIN_SUCCESS | Login realizado com sucesso | 200 |
-| RESET_EMAIL_SENT | E-mail de redefinição enviado | 200 |
-| PASSWORD_RESET_SUCCESS | Senha redefinida com sucesso | 200 |
+| USER_CREATED_SUCCESS | User created successfully| 201 |
+| LOGIN_SUCCESS | Login successful| 200 |
+| RESET_EMAIL_SENT | Password reset email sent | 200 |
+| PASSWORD_RESET_SUCCESS | Password reset successfully | 200 |
 
 ---
 
