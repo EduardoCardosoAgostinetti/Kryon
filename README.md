@@ -1,7 +1,7 @@
 # Kryon
-```
+
 O aplicativo Kryon é a ferramenta ideal para quem deseja organizar e acompanhar seus treinos de forma prática e eficiente. Com ele, você pode criar novas fichas de treino, registrando exercícios, séries, repetições e cargas utilizadas. Cada ficha é salva automaticamente, garantindo que seu histórico de treinos esteja sempre acessível e seguro.
-```
+
 ---
 
 ## 🚀 Technologies Used
