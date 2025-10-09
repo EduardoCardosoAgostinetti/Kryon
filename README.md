@@ -121,19 +121,7 @@ The app will start at **http://localhost:5173** by default.
 
 ---
 
-## CI/CD Workflow (GitHub Actions)
-
-The project uses **GitHub Actions** to automatically test both backend and frontend.
-
-### Workflow examples
-
-- **Backend Tests (`.github/workflows/back_tests.yml`)**
-
-They run automatically on each `push` to ensure code integrity.
-
----
-
-## 👨‍💻 Author
+## Author
 
 **Eduardo Cardoso**  
 Developed for academic and learning purposes.
