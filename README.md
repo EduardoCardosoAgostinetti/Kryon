@@ -1,195 +1,140 @@
 # Kryon
 
-O aplicativo Kryon é a ferramenta ideal para quem deseja organizar e acompanhar seus treinos de forma prática e eficiente. Com ele, você pode criar novas fichas de treino, registrando exercícios, séries, repetições e cargas utilizadas. Cada ficha é salva automaticamente, garantindo que seu histórico de treinos esteja sempre acessível e seguro.
+This project is a **Fullstack Web Application** consisting of a backend built with **Node.js + Express + PostgreSQL (Sequelize ORM)** and a frontend developed with **React + Vite**.
 
 ---
 
-## 🚀 Technologies Used
+## Backend Setup
 
-- **Node.js** with **Express**  
-- **PostgreSQL** as the database  
-- **JWT (JSON Web Token)** for authentication  
-- **Nodemailer** for sending emails  
-- **dotenv** for environment variable management  
+### Requirements
 
----
+- Node.js v20+
+- PostgreSQL 15+
 
-## ⚙️ Project Structure
+### Installation
 
-
-
-```
-kryon/
-│
-├── backend/
-│ ├── controllers/
-│ │ └── userController.js
-│ │
-│ ├── routes/
-│ │ └── userRoutes.js
-│ │
-│ ├── models/
-│ │ └── user_model.js
-│ │
-│ ├── config/
-│ │ ├── api_response.js
-│ │ └── database.js
-│ │
-│ ├── tests/
-│ │ ├── forgot_password_route.test.js
-│ │ ├── login_route.test.js
-│ │ ├── register_route.test.js
-│ │ └── reset_password_route.test.js
-│ │
-│ ├── server.js
-│ └── app.js
-│
-├── .gitignore
-├── .env
-├── package.json
-└── README.md
+```bash
+cd backend
+npm install
 ```
 
----
+### Environment Variables
 
-## 🧩 `.env` File
-
-The `.env` file should contain the following environment variables:
+Create a `.env` file in the `kryon` folder with the following configuration:
 
 ```env
-# Database configuration
-DB_NAME=dbname
-DB_USER=dbuser
-DB_PASS=dbpass
+DB_NAME=kryon
+DB_USER=postgres
+DB_PASS=root
 DB_HOST=localhost
 DB_PORT=5432
-
-# API configuration
 API_PORT=3000
-
-# JWT configuration
-JWT_SECRET=jwtsecret
-
-# Email configuration
+JWT_SECRET=root
 EMAIL_SERVICE=gmail
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=smtpuser
-SMTP_PASS=smtppass
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_email_password
+```
 
-# Frontend configuration
-FRONTEND_URL=http://localhost:5173
+### Run the API
 
+```bash
+npm run dev
+```
+The API will start at **http://localhost:3000**.
+
+### Run Tests
+
+```bash
+npm run test
+```
+This will execute all automated tests configured in GitHub Actions and locally via Supertest and Jest.
+
+---
+
+## Frontend Setup
+
+### Requirements
+
+- Node.js v20+
+- Vite (included in dependencies)
+
+### Installation
+
+```bash
+cd frontend
+npm install
+```
+
+### Run the Development Server
+
+```bash
+npm run dev
+```
+The app will start at **http://localhost:5173** by default.
+
+### Main Routes
+
+| Route | Description |
+|--------|-------------|
+| `/` | Home page |
+| `/signin` | User login |
+| `/signup` | Account creation |
+| `/forgot-password` | Password recovery form |
+| `/reset-password` | Password reset page |
+| `/dashboard` | Protected user dashboard (requires login) |
+
+---
+
+## Private Route Example
+
+```jsx
+<Route
+  path="/dashboard"
+  element={<PrivateRoute><Dashboard /></PrivateRoute>}
+/>
 ```
 
 ---
 
-## ▶️ How to Run the Project
+## Frontend Technologies
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. Create the .env file as shown above.
-
-3. Start the server:
-   ```bash
-   npm start
-   ```
-
-4. The server will run at:
-   ```
-   http://localhost:3000
-   ```
+- **React 19**
+- **React Router DOM 7**
+- **Axios** — API communication
+- **Lucide React** — Modern icons
+- **Vite** — Build and dev server
+- **Playwright** — Frontend testing
 
 ---
 
-## 🔐 Main Routes
+## Backend Technologies
 
-### 🔸 Authentication
-- `POST /api/user/register` → Create a new user with field validations
-- `POST /api/user/login` → Login with JWT token generation
-- `POST /api/user/forgot-password` → Send email for password reset
-- `POST /api/user/reset-password` → Reset password using token received via email
-
----
-
-
-## 🧾 POST /register
-
-| Código | Tipo de Erro | Mensagem | HTTP Status |
-|:------:|---------------|-----------|--------------|
-| MISSING_FULLNAME | Missing field | The 'Full Name' field is required. | 400 |
-| MISSING_USERNAME | Missing field | The 'Username' field is required. | 400 |
-| MISSING_EMAIL | Missing field | The 'Email' field is required. | 400 |
-| INVALID_EMAIL | Invalid email | The provided email is not valid. | 400 |
-| MISSING_PASSWORD | Missing field | The 'Password' field is required. | 400 |
-| MISSING_CONFIRM_PASSWORD | Missing field | The 'ConfirmPassword' field is required. | 400 |
-| PASSWORD_MISMATCH | Passwords do not match | Passwords do not match. | 400 |
-| EMAIL_EXISTS | Email already exists | The provided email is already in use. | 409 |
-| USERNAME_EXISTS | Username already exists | The provided username is already in use. | 409 |
-| SERVER_ERROR | Internal error | Error creating user. | 500 |
+- **Node.js + Express**
+- **Sequelize ORM**
+- **PostgreSQL**
+- **JWT Authentication**
+- **Bcrypt.js** — Password hashing
+- **Nodemailer** — Email service (forgot/reset password)
+- **Playwright + Jest** — Automated tests
 
 ---
 
-## 🔑 POST /login
+## CI/CD Workflow (GitHub Actions)
 
-| Código | Tipo de Erro | Mensagem | HTTP Status |
-|:------:|---------------|-----------|--------------|
-| MISSING_EMAIL | Missing field | The 'Email' field is required. | 400 |
-| INVALID_EMAIL | Invalid email | The provided email is not valid. | 400 |
-| MISSING_PASSWORD | Missing field | The 'Password' field is required. | 400 |
-| USER_NOT_FOUND | User not found | No user found with this email. | 404 |
-| INVALID_PASSWORD | Incorrect password | Incorrect password. | 401 |
-| SERVER_ERROR | Internal error | Error logging in. | 500 |
+The project uses **GitHub Actions** to automatically test both backend and frontend.
 
----
+### Workflow examples
 
-## ✉️ POST /forgot-password
+- **Backend Tests (`.github/workflows/back_tests.yml`)**
 
-| Código | Tipo de Erro | Mensagem | HTTP Status |
-|:------:|---------------|-----------|--------------|
-| MISSING_EMAIL | Missing field | The 'Email' field is required. | 400 |
-| INVALID_EMAIL | Invalid email | The provided email is not valid. | 400 |
-| USER_NOT_FOUND | User not found | No user found with this email. | 404 |
-| SERVER_ERROR | Internal error | Error sending reset email. | 500 |
+They run automatically on each `push` to ensure code integrity.
 
 ---
 
-## 🔁 POST /reset-password
+## 👨‍💻 Author
 
-| Código | Tipo de Erro | Mensagem | HTTP Status |
-|:------:|---------------|-----------|--------------|
-| MISSING_TOKEN | Missing field | The 'Token' field is required. | 400 |
-| MISSING_NEW_PASSWORD | Missing field | The 'New Password' field is required. | 400 |
-| MISSING_CONFIRM_PASSWORD | Missing field | The 'Confirm Password' field is required. | 400 |
-| PASSWORD_MISMATCH | Passwords do not match | Passwords do not match. | 400 |
-| INVALID_TOKEN | Invalid or expired token | The provided token is invalid or expired. | 401 |
-| USER_NOT_FOUND | User not found | User not found. | 404 |
-| SERVER_ERROR | Internal error | Error resetting password. | 500 |
+**Eduardo Cardoso**  
+Developed for academic and learning purposes.
 
----
-
-## ✅ Códigos de Sucesso
-
-| Código | Descrição | HTTP Status |
-|:------:|------------|--------------|
-| USER_CREATED_SUCCESS | User created successfully| 201 |
-| LOGIN_SUCCESS | Login successful| 200 |
-| RESET_EMAIL_SENT | Password reset email sent | 200 |
-| PASSWORD_RESET_SUCCESS | Password reset successfully | 200 |
-
----
-
-## 📨 Configuração de E-mail
-
-Emails are sent via Nodemailer, using the service defined in EMAIL_SERVICE.
-If using Gmail, app passwords must be enabled for the account.
-
----
-
-## 🧑‍💻 Autor
-
-**Eduardo Cardoso Agostinetti**  
-📧 Developed for academic and learning purposes.
