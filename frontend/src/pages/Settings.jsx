@@ -91,7 +91,6 @@ function Settings() {
         }
     };
 
-    // 🛡 Função para atualizar senha
     const handlePasswordUpdate = async () => {
         if (!currentPassword || !newPassword || !confirmPassword) {
             return setAlert({ type: "error", message: "All password fields are required." });
@@ -146,7 +145,9 @@ function Settings() {
                 {/* Account */}
                 <div className="settings-row" onClick={() => setShowAccountDetails(!showAccountDetails)}>
                     <span>Account</span>
-                    <ChevronRight size={20} />
+                    <div className={`chevron ${showAccountDetails ? "open" : ""}`}>
+                        <ChevronRight size={20} />
+                    </div>
                 </div>
 
                 {showAccountDetails && user && (
@@ -172,7 +173,9 @@ function Settings() {
                 {/* Security */}
                 <div className="settings-row" onClick={() => setShowSecurityDetails(!showSecurityDetails)}>
                     <span>Security</span>
-                    <ChevronRight size={20} />
+                    <div className={`chevron ${showSecurityDetails ? "open" : ""}`}>
+                        <ChevronRight size={20} />
+                    </div>
                 </div>
 
                 {showSecurityDetails && (
@@ -187,7 +190,9 @@ function Settings() {
                 {/* About */}
                 <div className="settings-row" onClick={() => setShowAboutDetails(!showAboutDetails)}>
                     <span>About</span>
-                    <ChevronRight size={20} />
+                    <div className={`chevron ${showAboutDetails ? "open" : ""}`}>
+                        <ChevronRight size={20} />
+                    </div>
                 </div>
 
                 {showAboutDetails && (
@@ -288,37 +293,102 @@ function Settings() {
                 </div>
             )}
 
+            {/* Estilo */}
             <style>{`
-                .settings-page { width: 100%; padding: 0; font-family: sans-serif; color: #fff; }
-                .settings-page h2 { text-align: center; margin-bottom: 20px; }
-                .settings-card { background: #505358; border-radius: 12px; overflow: hidden; margin-bottom: 15px; width: 100%; }
-                .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #3a3c3f; font-size: 16px; }
+                .settings-page {
+                    padding: 20px;
+                    font-family: 'Segoe UI', sans-serif;
+                    color: #fff;
+                    min-height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                h2 { color: #ff7f50; font-size: 2rem; margin-bottom: 20px; }
+
+                .settings-card {
+                    background: #20232a;
+                    border-radius: 12px;
+                    width: 100%;
+                    max-width: 650px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .settings-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 16px 20px;
+                    cursor: pointer;
+                    transition: background 0.2s;
+                    border-bottom: 1px solid #3a3a3f;
+                    font-size: 1rem;
+                }
+
                 .settings-row:last-child { border-bottom: none; }
-                .settings-row:hover { background: #606366; }
+                .settings-row:hover { background: #2a2d36; }
+
                 .logout span { color: #ff4d4f; font-weight: bold; }
                 .logout-card { margin-top: 10px; }
-                .user-details-card, .security-card, .about-card { background: #606366; padding: 15px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+                .user-details-card, .security-card, .about-card {
+                    background: #2a2d36;
+                    padding: 16px 20px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    border-radius: 10px;
+                    margin: 8px 0;
+                }
+
                 .user-detail { display: flex; flex-direction: column; gap: 4px; }
                 .detail-header { display: flex; justify-content: space-between; align-items: center; }
-                .detail-label { font-size: 14px; color: #ccc; }
-                .detail-value { font-size: 16px; color: #fff; font-weight: bold; }
-                .edit-btn { background: none; border: none; color: #ddd; cursor: pointer; transition: color 0.2s; }
-                .edit-btn:hover { color: #fff; }
+                .detail-label { font-size: 0.9rem; color: #bbb; }
+                .detail-value { font-size: 1rem; color: #fff; font-weight: 500; }
 
-                .security-item { display: flex; align-items: center; gap: 8px; color: #fff; background: #505358; padding: 10px; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
-                .security-item:hover { background: #6b6f73; }
+                .edit-btn { background: none; border: none; color: #ff7f50; cursor: pointer; transition: color 0.2s; }
+                .edit-btn:hover { color: #ffa577; }
 
-                .about-card h4 { margin: 0; font-size: 16px; font-weight: bold; color: #fff; }
-                .about-card p { margin: 0; color: #ddd; font-size: 14px; line-height: 1.5; }
-                .about-card .version { margin-top: 10px; font-weight: bold; color: #9acd32; }
+                .security-item { display: flex; align-items: center; gap: 8px; color: #fff; background: #20232a; padding: 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+                .security-item:hover { background: #2a2d36; }
 
-                .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-                .modal { background: #505358; padding: 20px; border-radius: 12px; width: 320px; display: flex; flex-direction: column; gap: 10px; animation: fadeIn 0.2s ease-in-out; }
-                @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-                .modal h3 { margin: 0; text-transform: capitalize; font-size: 18px; }
-                .modal label { font-size: 14px; color: #ccc; margin-top: 8px; }
-                .modal input { padding: 8px; border-radius: 8px; border: none; outline: none; font-size: 15px; }
-                .disabled-input { background: #3d3f42; color: #aaa; cursor: not-allowed; }
+                .about-card h4 { margin: 0; font-size: 1rem; font-weight: bold; color: #ff7f50; }
+                .about-card p { margin: 0; color: #ccc; font-size: 0.9rem; line-height: 1.5; }
+                .about-card .version { margin-top: 8px; font-weight: bold; color: #2ecc71; }
+
+                /* Chevron rotativo */
+                .chevron { transition: transform 0.2s ease; display: flex; align-items: center; }
+                .chevron.open { transform: rotate(90deg); }
+
+                /* Modals */
+                .modal-overlay {
+                    position: fixed; top:0; left:0; width:100%; height:100%;
+                    background: rgba(0,0,0,0.6);
+                    display: flex; justify-content: center; align-items: center; z-index: 1000;
+                }
+
+                .modal {
+                    background: #20232a;
+                    padding: 24px;
+                    border-radius: 12px;
+                    width: 320px;
+                    display: flex; flex-direction: column; gap: 12px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                    animation: fadeIn 0.2s ease-in-out;
+                }
+
+                @keyframes fadeIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
+
+                .modal h3 { margin: 0; text-transform: capitalize; font-size: 1.2rem; color: #ff7f50; }
+                .modal label { font-size: 0.9rem; color: #bbb; margin-top: 8px; }
+                .modal input { padding: 8px; border-radius: 8px; border: none; outline: none; font-size: 0.9rem; background: #2a2d36; color: #fff; }
+
+                .disabled-input { background: #3a3f42; color: #aaa; cursor: not-allowed; }
+
                 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
                 .cancel-btn, .save-btn, .logout-btn { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
                 .cancel-btn { background: #777; color: #fff; }
@@ -327,6 +397,10 @@ function Settings() {
                 .save-btn:hover { background: #45a049; }
                 .logout-btn:hover { background: #ff6b6d; }
                 .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+                @media (max-width: 600px) {
+                    .settings-card { padding: 10px; }
+                }
             `}</style>
         </div>
     );
