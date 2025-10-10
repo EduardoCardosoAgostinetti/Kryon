@@ -7,14 +7,14 @@ const nodemailer = require("nodemailer");
 const { Op } = require("sequelize");
 
 
-// Function to capitalize full name
+
 function capitalizeFullName(name) {
   return name
     .split(" ")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 }
-// Function to validate email format
+
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -153,7 +153,6 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// 🔹 Controller: Forgot Password
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -194,8 +193,6 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-
-// 🔹 Controller: Reset Password
 exports.resetPassword = async (req, res) => {
   try {
     const { token, newPassword, confirmPassword } = req.body;
@@ -231,5 +228,100 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     console.error(error);
     return apiResponse(res, false, "SERVER_ERROR", "Error resetting password.", null, 500);
+  }
+};
+
+exports.updateFullName = async (req, res) => {
+  try {
+    const { userId, newFullName } = req.body;
+
+    if (!newFullName)
+      return apiResponse(res, false, "MISSING_FULLNAME", "The 'Full Name' field is required.", null, 400);
+
+    const user = await User.findByPk(userId);
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+
+    const formattedName = capitalizeFullName(newFullName);
+    await user.update({ fullName: formattedName });
+
+    // Gera novo token atualizado
+    const token = jwt.sign(
+      { id: user.id, email: user.email, username: user.username, fullName: formattedName },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    return apiResponse(res, true, "FULLNAME_UPDATED", "Full name updated successfully.", { fullName: formattedName, token }, 200);
+
+  } catch (error) {
+    console.error(error);
+    return apiResponse(res, false, "SERVER_ERROR", "Error updating full name.", null, 500);
+  }
+};
+
+exports.updateEmail = async (req, res) => {
+  try {
+    const { userId, newEmail } = req.body;
+
+    if (!newEmail)
+      return apiResponse(res, false, "MISSING_EMAIL", "The 'Email' field is required.", null, 400);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmail))
+      return apiResponse(res, false, "INVALID_EMAIL", "The provided email is not valid.", null, 400);
+
+    const user = await User.findByPk(userId);
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+
+    const existingEmail = await User.findOne({ where: { email: newEmail, id: { [Op.ne]: userId } } });
+    if (existingEmail)
+      return apiResponse(res, false, "EMAIL_EXISTS", "The provided email is already in use.", null, 409);
+
+    await user.update({ email: newEmail });
+
+    const token = jwt.sign(
+      { id: user.id, email: newEmail, username: user.username, fullName: user.fullName },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    return apiResponse(res, true, "EMAIL_UPDATED", "Email updated successfully.", { email: newEmail, token }, 200);
+
+  } catch (error) {
+    console.error(error);
+    return apiResponse(res, false, "SERVER_ERROR", "Error updating email.", null, 500);
+  }
+};
+
+exports.updateUsername = async (req, res) => {
+  try {
+    const { userId, newUsername } = req.body;
+
+    if (!newUsername)
+      return apiResponse(res, false, "MISSING_USERNAME", "The 'Username' field is required.", null, 400);
+
+    const user = await User.findByPk(userId);
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+
+    const existingUsername = await User.findOne({ where: { username: newUsername, id: { [Op.ne]: userId } } });
+    if (existingUsername)
+      return apiResponse(res, false, "USERNAME_EXISTS", "The provided username is already in use.", null, 409);
+
+    await user.update({ username: newUsername });
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, username: newUsername, fullName: user.fullName },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    return apiResponse(res, true, "USERNAME_UPDATED", "Username updated successfully.", { username: newUsername, token }, 200);
+
+  } catch (error) {
+    console.error(error);
+    return apiResponse(res, false, "SERVER_ERROR", "Error updating username.", null, 500);
   }
 };

@@ -8,4 +8,9 @@ router.post("/login", user_controllers.loginUser);
 router.post("/forgot-password", user_controllers.forgotPassword);
 router.post("/reset-password", user_controllers.resetPassword);
 
+
+router.put("/update-fullname", user_controllers.updateFullName);
+router.put("/update-email", user_controllers.updateEmail);
+router.put("/update-username", user_controllers.updateUsername);
+
 module.exports = router;

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { ChevronRight, Pencil } from "lucide-react";
 import * as jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import api from "../config/api"; // import do Axios configurado
+import Alerts from "../components/Alerts";
 
 function Settings() {
     const [showAccountDetails, setShowAccountDetails] = useState(false);
@@ -12,6 +14,9 @@ function Settings() {
     const [currentValue, setCurrentValue] = useState("");
     const [newValue, setNewValue] = useState("");
     const [logoutModal, setLogoutModal] = useState(false);
+    const [alert, setAlert] = useState({ type: "", message: "" });
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,14 +32,6 @@ function Settings() {
         navigate("/signin");
     };
 
-    const handleAccountClick = () => {
-        if (user) setShowAccountDetails(!showAccountDetails);
-    };
-
-    const handleAboutClick = () => {
-        setShowAboutDetails(!showAboutDetails);
-    };
-
     const openEditModal = (field, value) => {
         setEditField(field);
         setCurrentValue(value);
@@ -42,70 +39,94 @@ function Settings() {
         setModalOpen(true);
     };
 
-    const handleSave = () => {
-        if (!newValue.trim()) return;
-        setUser((prev) => ({ ...prev, [editField]: newValue }));
+    const handleSave = async () => {
+    if (!newValue.trim()) return;
+
+    setLoading(true);
+
+    try {
+        const token = localStorage.getItem("token");
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        let endpoint = "";
+        let payload = {};
+
+        if (editField === "fullName") {
+            endpoint = "/user/update-fullname";
+            payload = { userId: user.id, newFullName: newValue };
+        } else if (editField === "email") {
+            endpoint = "/user/update-email";
+            payload = { userId: user.id, newEmail: newValue };
+        } else if (editField === "username") {
+            endpoint = "/user/update-username";
+            payload = { userId: user.id, newUsername: newValue };
+        }
+
+        const { data } = await api.put(endpoint, payload, config);
+
+        // Atualiza token no localStorage se houver token retornado
+        if (data.data?.token) {
+            localStorage.setItem("token", data.data.token);
+            // Atualiza estado do usuário com o novo token decodificado
+            const decoded = jwtDecode.jwtDecode(data.data.token);
+            setUser(decoded);
+        } else {
+            // fallback: apenas atualiza o campo localmente
+            setUser((prev) => ({
+                ...prev,
+                [editField]: newValue
+            }));
+        }
+
+        setAlert({ type: "success", message: data.message });
         setModalOpen(false);
-    };
+
+    } catch (error) {
+        if (error.response) {
+            setAlert({ type: "error", message: error.response.data.message });
+        } else {
+            setAlert({ type: "error", message: "Server connection error." });
+        }
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <div className="settings-page">
-            <h2>Settings</h2>
+            {alert.message && (
+                <Alerts
+                    type={alert.type}
+                    message={alert.message}
+                    onClose={() => setAlert({ type: "", message: "" })}
+                />
+            )}
 
+            <h2>Settings</h2>
             <div className="settings-card">
-                <div className="settings-row" onClick={handleAccountClick}>
+                <div className="settings-row" onClick={() => setShowAccountDetails(!showAccountDetails)}>
                     <span>Account</span>
                     <ChevronRight size={20} />
                 </div>
 
                 {showAccountDetails && user && (
                     <div className="user-details-card">
-                        {user.fullName && (
-                            <div className="user-detail">
-                                <div className="detail-header">
-                                    <span className="detail-label">Name</span>
-                                    <button
-                                        className="edit-btn"
-                                        onClick={() => openEditModal("fullName", user.fullName)}
-                                    >
-                                        <Pencil size={16} />
-                                    </button>
+                        {["fullName", "email", "username"].map((field) =>
+                            user[field] ? (
+                                <div className="user-detail" key={field}>
+                                    <div className="detail-header">
+                                        <span className="detail-label">{field === "fullName" ? "Name" : field.charAt(0).toUpperCase() + field.slice(1)}</span>
+                                        <button className="edit-btn" onClick={() => openEditModal(field, user[field])}>
+                                            <Pencil size={16} />
+                                        </button>
+                                    </div>
+                                    <span className="detail-value">{user[field]}</span>
                                 </div>
-                                <span className="detail-value">{user.fullName}</span>
-                            </div>
-                        )}
-                        {user.email && (
-                            <div className="user-detail">
-                                <div className="detail-header">
-                                    <span className="detail-label">Email</span>
-                                    <button
-                                        className="edit-btn"
-                                        onClick={() => openEditModal("email", user.email)}
-                                    >
-                                        <Pencil size={16} />
-                                    </button>
-                                </div>
-                                <span className="detail-value">{user.email}</span>
-                            </div>
-                        )}
-                        {user.username && (
-                            <div className="user-detail">
-                                <div className="detail-header">
-                                    <span className="detail-label">Username</span>
-                                    <button
-                                        className="edit-btn"
-                                        onClick={() => openEditModal("username", user.username)}
-                                    >
-                                        <Pencil size={16} />
-                                    </button>
-                                </div>
-                                <span className="detail-value">{user.username}</span>
-                            </div>
+                            ) : null
                         )}
                     </div>
                 )}
 
-                <div className="settings-row" onClick={handleAboutClick}>
+                <div className="settings-row" onClick={() => setShowAboutDetails(!showAboutDetails)}>
                     <span>About</span>
                     <ChevronRight size={20} />
                 </div>
@@ -134,34 +155,13 @@ function Settings() {
                 <div className="modal-overlay" onClick={() => setModalOpen(false)}>
                     <div className="modal" onClick={(e) => e.stopPropagation()}>
                         <h3>Edit {editField}</h3>
-
                         <label>Current Value</label>
-                        <input
-                            type="text"
-                            value={currentValue}
-                            disabled
-                            className="disabled-input"
-                        />
-
+                        <input type="text" value={currentValue} disabled className="disabled-input" />
                         <label>New Value</label>
-                        <input
-                            type="text"
-                            value={newValue}
-                            onChange={(e) => setNewValue(e.target.value)}
-                            placeholder={`Enter new ${editField}`}
-                        />
-
+                        <input type="text" value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder={`Enter new ${editField}`} />
                         <div className="modal-actions">
-                            <button className="cancel-btn" onClick={() => setModalOpen(false)}>
-                                Cancel
-                            </button>
-                            <button
-                                className="save-btn"
-                                onClick={handleSave}
-                                disabled={!newValue.trim()}
-                            >
-                                Save
-                            </button>
+                            <button className="cancel-btn" onClick={() => setModalOpen(false)}>Cancel</button>
+                            <button className="save-btn" onClick={handleSave} disabled={!newValue.trim() || loading}>{loading ? "Saving..." : "Save"}</button>
                         </div>
                     </div>
                 </div>
@@ -174,12 +174,8 @@ function Settings() {
                         <h3>Confirm Logout</h3>
                         <p>Are you sure you want to log out?</p>
                         <div className="modal-actions">
-                            <button className="cancel-btn" onClick={() => setLogoutModal(false)}>
-                                Cancel
-                            </button>
-                            <button className="logout-btn" onClick={handleLogout}>
-                                Logout
-                            </button>
+                            <button className="cancel-btn" onClick={() => setLogoutModal(false)}>Cancel</button>
+                            <button className="logout-btn" onClick={handleLogout}>Logout</button>
                         </div>
                     </div>
                 </div>
@@ -288,3 +284,7 @@ function Settings() {
 }
 
 export default Settings;
+
+
+
+
