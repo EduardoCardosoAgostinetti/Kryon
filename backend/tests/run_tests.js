@@ -1,10 +1,14 @@
 const { execSync } = require("child_process");
 
 const tests = [
-  "tests/register_route.test.js",       // Register
-  "tests/login_route.test.js",           // Login
-  "tests/forgot_password_route.test.js", // Forgot Password
-  "tests/reset_password_route.test.js"   // Reset Password
+  "tests/register_route.test.js",      
+  "tests/login_route.test.js",           
+  "tests/forgot_password_route.test.js", 
+  "tests/reset_password_route.test.js",
+  "tests/update_fullname_route.test.js",
+  "tests/update_email_route.test.js",
+  "tests/update_username_route.test.js",
+  "tests/update_password_route.test.js"
 ];
 
 for (const test of tests) {
