@@ -84,17 +84,7 @@ The app will start at **http://localhost:5173** by default.
 | `/forgot-password` | Password recovery form |
 | `/reset-password` | Password reset page |
 | `/dashboard` | Protected user dashboard (requires login) |
-
----
-
-## Private Route Example
-
-```jsx
-<Route
-  path="/dashboard"
-  element={<PrivateRoute><Dashboard /></PrivateRoute>}
-/>
-```
+| `/dashboard/settings` | Protected user settings (requires login) |
 
 ---
 
