@@ -13,12 +13,6 @@ function Navbar() {
     setIsLogged(!!token);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsLogged(false);
-    navigate("/signin");
-  };
-
   return (
     <>
       <nav className="navbar">
@@ -27,36 +21,34 @@ function Navbar() {
         </div>
 
         <div className={`links ${isOpen ? "open" : ""}`}>
-          <Link to="/" className="nav-btn">
-            <Home size={18} />
-            <span>Home</span>
-          </Link>
-
-          {isLogged ? (
+          {!isLogged ? (
             <>
-              <Link to="/dashboard" className="nav-btn">
-                <LayoutDashboard size={18} />
-                <span>Dashboard</span>
+              <Link to="/" className="nav-btn">
+                <Home size={18} />
+                <span>Home</span>
               </Link>
 
-              <button onClick={handleLogout} className="nav-btn logout">
-                <LogOut size={18} />
-                <span>Logout</span>
-              </button>
-            </>
-          ) : (
-            <>
               <Link to="/signin" className="nav-btn">
                 <LogIn size={18} />
                 <span>Sign In</span>
               </Link>
+
               <Link to="/signup" className="nav-btn signup">
                 <UserPlus size={18} />
                 <span>Sign Up</span>
               </Link>
             </>
+          ) : (
+            <>
+              <Link to="/dashboard/workouts" className="nav-btn">
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
+              </Link>
+
+            </>
           )}
         </div>
+
 
         <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
           ☰
@@ -112,15 +104,7 @@ function Navbar() {
           .navbar .nav-btn.signup:hover {
             background-color: #ff946b;
           }
-
-          .navbar .nav-btn.logout {
-            background-color: #b93b3b;
-          }
-
-          .navbar .nav-btn.logout:hover {
-            background-color: #d34d4d;
-          }
-
+                    
           .nav-btn svg {
             flex-shrink: 0;
           }

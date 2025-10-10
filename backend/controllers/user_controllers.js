@@ -132,7 +132,7 @@ exports.loginUser = async (req, res) => {
 
     // 4️⃣ Gera JWT
     const token = jwt.sign(
-      { id: user.id, email: user.email, username: user.username },
+      { id: user.id, email: user.email, username: user.username, fullName: user.fullName },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );

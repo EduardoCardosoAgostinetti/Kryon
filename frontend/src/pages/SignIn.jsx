@@ -28,10 +28,10 @@ function SignIn() {
       const { data } = await api.post("/user/login", { email, password });
       console.log(data);
 
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.data.token);
 
-      navigate("/dashboard");
-      console.log(data);
+      navigate("/dashboard/workouts");
+      console.log(data.data.token);
     } catch (error) {
       if (error.response) {
         setAlert({ type: "error", message: error.response.data.message });
