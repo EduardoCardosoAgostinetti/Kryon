@@ -12,5 +12,6 @@ router.post("/reset-password", user_controllers.resetPassword);
 router.put("/update-fullname", user_controllers.updateFullName);
 router.put("/update-email", user_controllers.updateEmail);
 router.put("/update-username", user_controllers.updateUsername);
+router.put("/update-password", user_controllers.updatePassword); 
 
 module.exports = router;

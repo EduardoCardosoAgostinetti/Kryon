@@ -325,3 +325,60 @@ exports.updateUsername = async (req, res) => {
     return apiResponse(res, false, "SERVER_ERROR", "Error updating username.", null, 500);
   }
 };
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const { userId, currentPassword, newPassword, confirmPassword } = req.body;
+
+    // 1️⃣ Validações básicas
+    if (!userId)
+      return apiResponse(res, false, "MISSING_USER_ID", "The 'User ID' field is required.", null, 400);
+    if (!currentPassword)
+      return apiResponse(res, false, "MISSING_CURRENT_PASSWORD", "The 'Current Password' field is required.", null, 400);
+    if (!newPassword)
+      return apiResponse(res, false, "MISSING_NEW_PASSWORD", "The 'New Password' field is required.", null, 400);
+    if (!confirmPassword)
+      return apiResponse(res, false, "MISSING_CONFIRM_PASSWORD", "The 'Confirm Password' field is required.", null, 400);
+    if (newPassword !== confirmPassword)
+      return apiResponse(res, false, "PASSWORD_MISMATCH", "Passwords do not match.", null, 400);
+
+    // 2️⃣ Busca o usuário
+    const user = await User.findByPk(userId);
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+
+    // 3️⃣ Verifica se a senha atual está correta
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch)
+      return apiResponse(res, false, "INVALID_CURRENT_PASSWORD", "The current password is incorrect.", null, 401);
+
+    // 4️⃣ Garante que a nova senha seja diferente
+    const sameAsOld = await bcrypt.compare(newPassword, user.password);
+    if (sameAsOld)
+      return apiResponse(res, false, "SAME_PASSWORD", "The new password must be different from the current password.", null, 400);
+
+    // 5️⃣ Criptografa e atualiza a nova senha
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await user.update({ password: hashedPassword });
+
+    // 6️⃣ Gera novo token (mantendo dados atualizados)
+    const token = jwt.sign(
+      { id: user.id, email: user.email, username: user.username, fullName: user.fullName },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    return apiResponse(
+      res,
+      true,
+      "PASSWORD_UPDATED",
+      "Password updated successfully.",
+      { token },
+      200
+    );
+
+  } catch (error) {
+    console.error(error);
+    return apiResponse(res, false, "SERVER_ERROR", "Error updating password.", null, 500);
+  }
+};

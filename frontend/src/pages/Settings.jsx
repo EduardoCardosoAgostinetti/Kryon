@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { ChevronRight, Pencil } from "lucide-react";
+import { ChevronRight, Pencil, Shield } from "lucide-react";
 import * as jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import api from "../config/api"; // import do Axios configurado
+import api from "../config/api";
 import Alerts from "../components/Alerts";
 
 function Settings() {
     const [showAccountDetails, setShowAccountDetails] = useState(false);
+    const [showSecurityDetails, setShowSecurityDetails] = useState(false);
     const [showAboutDetails, setShowAboutDetails] = useState(false);
     const [user, setUser] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
@@ -14,6 +15,10 @@ function Settings() {
     const [currentValue, setCurrentValue] = useState("");
     const [newValue, setNewValue] = useState("");
     const [logoutModal, setLogoutModal] = useState(false);
+    const [passwordModal, setPasswordModal] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [alert, setAlert] = useState({ type: "", message: "" });
     const [loading, setLoading] = useState(false);
 
@@ -40,56 +45,90 @@ function Settings() {
     };
 
     const handleSave = async () => {
-    if (!newValue.trim()) return;
+        if (!newValue.trim()) return;
 
-    setLoading(true);
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            let endpoint = "";
+            let payload = {};
 
-    try {
-        const token = localStorage.getItem("token");
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        let endpoint = "";
-        let payload = {};
+            if (editField === "fullName") {
+                endpoint = "/user/update-fullname";
+                payload = { userId: user.id, newFullName: newValue };
+            } else if (editField === "email") {
+                endpoint = "/user/update-email";
+                payload = { userId: user.id, newEmail: newValue };
+            } else if (editField === "username") {
+                endpoint = "/user/update-username";
+                payload = { userId: user.id, newUsername: newValue };
+            }
 
-        if (editField === "fullName") {
-            endpoint = "/user/update-fullname";
-            payload = { userId: user.id, newFullName: newValue };
-        } else if (editField === "email") {
-            endpoint = "/user/update-email";
-            payload = { userId: user.id, newEmail: newValue };
-        } else if (editField === "username") {
-            endpoint = "/user/update-username";
-            payload = { userId: user.id, newUsername: newValue };
+            const { data } = await api.put(endpoint, payload, config);
+
+            if (data.data?.token) {
+                localStorage.setItem("token", data.data.token);
+                const decoded = jwtDecode.jwtDecode(data.data.token);
+                setUser(decoded);
+            } else {
+                setUser((prev) => ({
+                    ...prev,
+                    [editField]: newValue
+                }));
+            }
+
+            setAlert({ type: "success", message: data.message });
+            setModalOpen(false);
+        } catch (error) {
+            if (error.response) {
+                setAlert({ type: "error", message: error.response.data.message });
+            } else {
+                setAlert({ type: "error", message: "Server connection error." });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 🛡 Função para atualizar senha
+    const handlePasswordUpdate = async () => {
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return setAlert({ type: "error", message: "All password fields are required." });
+        }
+        if (newPassword !== confirmPassword) {
+            return setAlert({ type: "error", message: "Passwords do not match." });
         }
 
-        const { data } = await api.put(endpoint, payload, config);
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const config = { headers: { Authorization: `Bearer ${token}` } };
 
-        // Atualiza token no localStorage se houver token retornado
-        if (data.data?.token) {
-            localStorage.setItem("token", data.data.token);
-            // Atualiza estado do usuário com o novo token decodificado
-            const decoded = jwtDecode.jwtDecode(data.data.token);
-            setUser(decoded);
-        } else {
-            // fallback: apenas atualiza o campo localmente
-            setUser((prev) => ({
-                ...prev,
-                [editField]: newValue
-            }));
+            const payload = {
+                userId: user.id,
+                currentPassword,
+                newPassword,
+                confirmPassword,
+            };
+
+            const { data } = await api.put("/user/update-password", payload, config);
+
+            setAlert({ type: "success", message: data.message });
+            setPasswordModal(false);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+        } catch (error) {
+            if (error.response) {
+                setAlert({ type: "error", message: error.response.data.message });
+            } else {
+                setAlert({ type: "error", message: "Server connection error." });
+            }
+        } finally {
+            setLoading(false);
         }
-
-        setAlert({ type: "success", message: data.message });
-        setModalOpen(false);
-
-    } catch (error) {
-        if (error.response) {
-            setAlert({ type: "error", message: error.response.data.message });
-        } else {
-            setAlert({ type: "error", message: "Server connection error." });
-        }
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
     return (
         <div className="settings-page">
@@ -102,7 +141,9 @@ function Settings() {
             )}
 
             <h2>Settings</h2>
+
             <div className="settings-card">
+                {/* Account */}
                 <div className="settings-row" onClick={() => setShowAccountDetails(!showAccountDetails)}>
                     <span>Account</span>
                     <ChevronRight size={20} />
@@ -114,7 +155,9 @@ function Settings() {
                             user[field] ? (
                                 <div className="user-detail" key={field}>
                                     <div className="detail-header">
-                                        <span className="detail-label">{field === "fullName" ? "Name" : field.charAt(0).toUpperCase() + field.slice(1)}</span>
+                                        <span className="detail-label">
+                                            {field === "fullName" ? "Name" : field.charAt(0).toUpperCase() + field.slice(1)}
+                                        </span>
                                         <button className="edit-btn" onClick={() => openEditModal(field, user[field])}>
                                             <Pencil size={16} />
                                         </button>
@@ -126,6 +169,22 @@ function Settings() {
                     </div>
                 )}
 
+                {/* Security */}
+                <div className="settings-row" onClick={() => setShowSecurityDetails(!showSecurityDetails)}>
+                    <span>Security</span>
+                    <ChevronRight size={20} />
+                </div>
+
+                {showSecurityDetails && (
+                    <div className="security-card">
+                        <div className="security-item" onClick={() => setPasswordModal(true)}>
+                            <Shield size={18} />
+                            <span>Change Password</span>
+                        </div>
+                    </div>
+                )}
+
+                {/* About */}
                 <div className="settings-row" onClick={() => setShowAboutDetails(!showAboutDetails)}>
                     <span>About</span>
                     <ChevronRight size={20} />
@@ -143,6 +202,7 @@ function Settings() {
                 )}
             </div>
 
+            {/* Logout */}
             <div className="settings-card logout-card" onClick={() => setLogoutModal(true)}>
                 <div className="settings-row logout">
                     <span>Logout</span>
@@ -158,10 +218,57 @@ function Settings() {
                         <label>Current Value</label>
                         <input type="text" value={currentValue} disabled className="disabled-input" />
                         <label>New Value</label>
-                        <input type="text" value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder={`Enter new ${editField}`} />
+                        <input
+                            type="text"
+                            value={newValue}
+                            onChange={(e) => setNewValue(e.target.value)}
+                            placeholder={`Enter new ${editField}`}
+                        />
                         <div className="modal-actions">
                             <button className="cancel-btn" onClick={() => setModalOpen(false)}>Cancel</button>
-                            <button className="save-btn" onClick={handleSave} disabled={!newValue.trim() || loading}>{loading ? "Saving..." : "Save"}</button>
+                            <button className="save-btn" onClick={handleSave} disabled={!newValue.trim() || loading}>
+                                {loading ? "Saving..." : "Save"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Senha */}
+            {passwordModal && (
+                <div className="modal-overlay" onClick={() => setPasswordModal(false)}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Change Password</h3>
+
+                        <label>Current Password</label>
+                        <input
+                            type="password"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            placeholder="Enter current password"
+                        />
+
+                        <label>New Password</label>
+                        <input
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            placeholder="Enter new password"
+                        />
+
+                        <label>Confirm New Password</label>
+                        <input
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="Confirm new password"
+                        />
+
+                        <div className="modal-actions">
+                            <button className="cancel-btn" onClick={() => setPasswordModal(false)}>Cancel</button>
+                            <button className="save-btn" onClick={handlePasswordUpdate} disabled={loading}>
+                                {loading ? "Updating..." : "Update"}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -190,7 +297,7 @@ function Settings() {
                 .settings-row:hover { background: #606366; }
                 .logout span { color: #ff4d4f; font-weight: bold; }
                 .logout-card { margin-top: 10px; }
-                .user-details-card { background: #606366; padding: 15px 20px; display: flex; flex-direction: column; gap: 10px; }
+                .user-details-card, .security-card, .about-card { background: #606366; padding: 15px 20px; display: flex; flex-direction: column; gap: 10px; }
                 .user-detail { display: flex; flex-direction: column; gap: 4px; }
                 .detail-header { display: flex; justify-content: space-between; align-items: center; }
                 .detail-label { font-size: 14px; color: #ccc; }
@@ -198,83 +305,25 @@ function Settings() {
                 .edit-btn { background: none; border: none; color: #ddd; cursor: pointer; transition: color 0.2s; }
                 .edit-btn:hover { color: #fff; }
 
-                /* About */
-                .about-card {
-                    background: #606366;
-                    padding: 15px 20px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
+                .security-item { display: flex; align-items: center; gap: 8px; color: #fff; background: #505358; padding: 10px; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+                .security-item:hover { background: #6b6f73; }
+
                 .about-card h4 { margin: 0; font-size: 16px; font-weight: bold; color: #fff; }
                 .about-card p { margin: 0; color: #ddd; font-size: 14px; line-height: 1.5; }
                 .about-card .version { margin-top: 10px; font-weight: bold; color: #9acd32; }
 
-                /* Modal */
-                .modal-overlay {
-                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                    background: rgba(0,0,0,0.5);
-                    display: flex; justify-content: center; align-items: center;
-                    z-index: 1000;
-                }
-
-                .modal {
-                    background: #505358;
-                    padding: 20px;
-                    border-radius: 12px;
-                    width: 320px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                    animation: fadeIn 0.2s ease-in-out;
-                }
-
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: scale(0.95); }
-                    to { opacity: 1; transform: scale(1); }
-                }
-
+                .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+                .modal { background: #505358; padding: 20px; border-radius: 12px; width: 320px; display: flex; flex-direction: column; gap: 10px; animation: fadeIn 0.2s ease-in-out; }
+                @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
                 .modal h3 { margin: 0; text-transform: capitalize; font-size: 18px; }
-
-                .modal label {
-                    font-size: 14px;
-                    color: #ccc;
-                    margin-top: 8px;
-                }
-
-                .modal input {
-                    padding: 8px;
-                    border-radius: 8px;
-                    border: none;
-                    outline: none;
-                    font-size: 15px;
-                }
-
-                .disabled-input {
-                    background: #3d3f42;
-                    color: #aaa;
-                    cursor: not-allowed;
-                }
-
-                .modal-actions {
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 10px;
-                    margin-top: 10px;
-                }
-
-                .cancel-btn, .save-btn, .logout-btn {
-                    padding: 8px 14px;
-                    border-radius: 8px;
-                    border: none;
-                    cursor: pointer;
-                    font-weight: bold;
-                }
-
+                .modal label { font-size: 14px; color: #ccc; margin-top: 8px; }
+                .modal input { padding: 8px; border-radius: 8px; border: none; outline: none; font-size: 15px; }
+                .disabled-input { background: #3d3f42; color: #aaa; cursor: not-allowed; }
+                .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+                .cancel-btn, .save-btn, .logout-btn { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
                 .cancel-btn { background: #777; color: #fff; }
                 .save-btn { background: #4caf50; color: #fff; }
                 .logout-btn { background: #ff4d4f; color: #fff; }
-
                 .save-btn:hover { background: #45a049; }
                 .logout-btn:hover { background: #ff6b6d; }
                 .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -284,7 +333,3 @@ function Settings() {
 }
 
 export default Settings;
-
-
-
-
