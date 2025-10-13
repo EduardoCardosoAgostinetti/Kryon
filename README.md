@@ -35,6 +35,8 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_email_password
+FRONTEND_URL=http://localhost:5173
+BACKEND_URL=http://localhost:3000
 ```
 
 ### Run the API
@@ -85,6 +87,8 @@ The app will start at **http://localhost:5173** by default.
 | `/reset-password` | Password reset page |
 | `/dashboard` | Protected user dashboard (requires login) |
 | `/dashboard/settings` | Protected user settings (requires login) |
+| `/dashboard/workouts` | Protected user workouts (requires login) |
+`/dashboard/new` | Protected user create new workouts (requires login) |
 
 ---
 

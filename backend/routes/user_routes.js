@@ -7,7 +7,7 @@ router.post("/login", user_controllers.loginUser);
 
 router.post("/forgot-password", user_controllers.forgotPassword);
 router.post("/reset-password", user_controllers.resetPassword);
-
+router.get("/activate-account", user_controllers.activateUser);
 
 router.put("/update-fullname", user_controllers.updateFullName);
 router.put("/update-email", user_controllers.updateEmail);

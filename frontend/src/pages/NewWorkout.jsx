@@ -12,15 +12,15 @@ function NewWorkout() {
   const [alert, setAlert] = useState({ type: "", message: "" });
 
   const muscleGroups = [
-    "Peito",
-    "Costas",
-    "Ombros",
-    "Bíceps",
-    "Tríceps",
-    "Quadríceps",
-    "Posterior de coxa",
-    "Panturrilhas",
-    "Abdômen",
+    "Chest",
+    "Back",
+    "Shoulders",
+    "Biceps",
+    "Triceps",
+    "Quadriceps",
+    "Hamstrings",
+    "Calves",
+    "Abs",
   ];
 
   const getUserId = () => {
@@ -30,13 +30,13 @@ function NewWorkout() {
       const decoded = jwtDecode.jwtDecode(token);
       return decoded.id;
     } catch (err) {
-      console.error("Erro ao decodificar token:", err);
+      console.error("Error decoding token:", err);
       return null;
     }
   };
 
   const addExercise = () => {
-    if (!selectedGroup) return setAlert({ type: "error", message: "Selecione um grupo muscular!" });
+    if (!selectedGroup) return setAlert({ type: "error", message: "Select a muscle group first!" });
     const updated = { ...workout };
     if (!updated[selectedGroup]) updated[selectedGroup] = [];
     updated[selectedGroup].push({ name: "", series: [{ weight: "", reps: "" }] });
@@ -63,18 +63,18 @@ function NewWorkout() {
 
   const saveWorkout = async () => {
     const userId = getUserId();
-    if (!userId) return setAlert({ type: "error", message: "Usuário não identificado!" });
-    if (Object.keys(workout).length === 0) return setAlert({ type: "error", message: "Adicione pelo menos um exercício!" });
+    if (!userId) return setAlert({ type: "error", message: "User not identified!" });
+    if (Object.keys(workout).length === 0) return setAlert({ type: "error", message: "Add at least one exercise!" });
 
     try {
       setLoading(true);
-      const response = await api.post("/workout/create", { userId, data: workout });
-      setAlert({ type: "success", message: "Ficha criada com sucesso!" });
+      await api.post("/workout/create", { userId, data: workout });
+      setAlert({ type: "success", message: "Workout created successfully!" });
       setWorkout({});
       setSelectedGroup("");
     } catch (error) {
       console.error(error);
-      setAlert({ type: "error", message: error.response?.data?.message || "Erro ao criar a ficha!" });
+      setAlert({ type: "error", message: error.response?.data?.message || "Error creating workout!" });
     } finally {
       setLoading(false);
     }
@@ -82,31 +82,31 @@ function NewWorkout() {
 
   return (
     <div className="new-workout-wrapper">
-      {loading && <Loading message="Salvando ficha..." />}
+      {loading && <Loading message="Saving workout..." />}
       {alert.message && (
         <Alerts type={alert.type} message={alert.message} onClose={() => setAlert({ type: "", message: "" })} />
       )}
 
       <div className="new-workout-card">
         <h2>
-          <Dumbbell size={24} color="#ff7f50" /> Nova Ficha
+          <Dumbbell size={24} color="#ff7f50" /> New Workout
         </h2>
 
         <div className="form-group">
-          <label>Grupo muscular</label>
+          <label>Muscle group</label>
           <select value={selectedGroup} onChange={(e) => setSelectedGroup(e.target.value)}>
-            <option value="">Selecione o grupo muscular</option>
+            <option value="">Select a muscle group</option>
             {muscleGroups.map((group) => (
               <option key={group} value={group}>{group}</option>
             ))}
           </select>
           <button className="add-btn" onClick={addExercise}>
-            <PlusCircle size={18} /> Adicionar Exercício
+            <PlusCircle size={18} /> Add Exercise
           </button>
         </div>
 
         {Object.keys(workout).length === 0 && (
-          <p className="no-exercises">Nenhum exercício adicionado ainda.</p>
+          <p className="no-exercises">No exercises added yet.</p>
         )}
 
         {Object.entries(workout).map(([group, exercises]) => (
@@ -116,7 +116,7 @@ function NewWorkout() {
               <div key={exIndex} className="exercise-card">
                 <input
                   type="text"
-                  placeholder="Nome do exercício"
+                  placeholder="Exercise name"
                   value={ex.name}
                   onChange={(e) => updateExercise(group, exIndex, "name", e.target.value)}
                   className="exercise-name"
@@ -125,14 +125,14 @@ function NewWorkout() {
                   <div key={sIndex} className="series-row">
                     <input
                       type="number"
-                      placeholder="Peso (kg)"
+                      placeholder="Weight (kg)"
                       value={serie.weight}
                       onChange={(e) => updateSeries(group, exIndex, sIndex, "weight", e.target.value)}
                       className="series-input"
                     />
                     <input
                       type="number"
-                      placeholder="Repetições"
+                      placeholder="Reps"
                       value={serie.reps}
                       onChange={(e) => updateSeries(group, exIndex, sIndex, "reps", e.target.value)}
                       className="series-input"
@@ -140,7 +140,7 @@ function NewWorkout() {
                   </div>
                 ))}
                 <button className="add-series" onClick={() => addSeries(group, exIndex)}>
-                  + Adicionar série
+                  + Add Set
                 </button>
               </div>
             ))}
@@ -149,7 +149,7 @@ function NewWorkout() {
 
         {Object.keys(workout).length > 0 && (
           <button className="save-btn" onClick={saveWorkout} disabled={loading}>
-            <Save size={18} /> {loading ? "Salvando..." : "Salvar Ficha"}
+            <Save size={18} /> {loading ? "Saving..." : "Save Workout"}
           </button>
         )}
       </div>
@@ -160,7 +160,6 @@ function NewWorkout() {
           justify-content: center;
           align-items: flex-start;
           padding: 20px;
-          
           min-height: 100vh;
         }
 
@@ -240,18 +239,17 @@ function NewWorkout() {
 
         .series-row {
           display: flex;
-          gap: 10px; /* espaço entre os inputs */
+          gap: 10px;
         }
 
         .series-input {
-          flex: 1; /* divide o espaço restante igualmente */
-          min-width: 0; /* permite que o flex funcione corretamente no celular */
+          flex: 1;
+          min-width: 0;
           padding: 10px;
           border-radius: 6px;
           border: 1px solid #3a3a3f;
           font-size: 1rem;
         }
-
 
         .add-series {
           background: none;

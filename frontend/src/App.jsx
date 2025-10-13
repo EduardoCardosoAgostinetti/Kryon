@@ -10,6 +10,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Workouts from "./pages/Workouts";
 import NewWorkout from "./pages/NewWorkout";
 import Settings from "./pages/Settings";
+import ActivateAccount from "./pages/ActivateAccount";
 
 
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/activate-account" element={<ActivateAccount />} />
 
         {/* Rota protegida */}
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}>

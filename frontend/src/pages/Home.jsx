@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import HeroImage from "../assets/fitness-hero.png";
-//import Feature1 from "../assets/feature1.png";
-//import Feature2 from "../assets/feature2.png";
-//import Feature3 from "../assets/feature3.png";
+import Feature1 from "../assets/feature1.png";
+import Feature2 from "../assets/feature2.png";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -36,19 +35,15 @@ function Home() {
                     <h2>Funcionalidades</h2>
                     <div className="feature-cards">
                         <div className="card">
-                            <img src="{Feature1}" alt="Treinos Personalizados" />
+                            <img src={Feature1} alt="Treinos Personalizados" />
                             <h3>Treinos Personalizados</h3>
                             <p>Crie treinos adaptados ao seu nível e objetivos.</p>
                         </div>
+                        
                         <div className="card">
-                            <img src="{Feature2}" alt="Dietas Planejadas" />
-                            <h3>Dietas Planejadas</h3>
-                            <p>Receba planos alimentares para complementar seu treino.</p>
-                        </div>
-                        <div className="card">
-                            <img src="{Feature3}" alt="Monitoramento de Progresso" />
+                            <img src={Feature2} alt="Monitoramento de Progresso" />
                             <h3>Monitoramento de Progresso</h3>
-                            <p>Visualize gráficos e estatísticas do seu desempenho.</p>
+                            <p>Visualize seu desempenho de perto.</p>
                         </div>
                     </div>
                 </section>
@@ -130,7 +125,7 @@ function Home() {
             background-color: #f5f5f5;
             padding: 20px;
             border-radius: 10px;
-            width: 250px;
+            
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.3s;
@@ -141,7 +136,7 @@ function Home() {
           }
 
           .card img {
-            width: 80px;
+            width: 350px;
             margin-bottom: 15px;
           }
 

@@ -59,6 +59,42 @@ async function sendResetEmail(toEmail, resetToken) {
   await transporter.sendMail(mailOptions);
 }
 
+async function sendActivationEmail(toEmail, activationToken) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT || 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  const activationLink = `${process.env.FRONTEND_URL}/activate-account?token=${activationToken}`;
+
+  const mailOptions = {
+    from: `"Suporte - Kryon" <${process.env.SMTP_USER}>`,
+    to: toEmail,
+    subject: "Ative sua conta",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 500px;">
+        <h2>Ative sua conta</h2>
+        <p>Obrigado por se cadastrar! Clique no botão abaixo para ativar sua conta:</p>
+        <a href="${activationLink}" 
+           style="display:inline-block;background:#28a745;color:#fff;padding:10px 20px;
+                  border-radius:5px;text-decoration:none;margin-top:10px;">
+          Ativar Conta
+        </a>
+        <p style="margin-top:20px;">Se você não solicitou essa ação, ignore este e-mail.</p>
+        <hr>
+        <small>Link válido por 25 minutos.</small>
+      </div>
+    `
+  };
+
+  await transporter.sendMail(mailOptions);
+}
+
 exports.createUser = async (req, res) => {
   try {
     let { fullName, username, email, password, confirmPassword } = req.body;
@@ -98,9 +134,18 @@ exports.createUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      isActive: false,
     });
 
-    return apiResponse(res, true, "USER_CREATED_SUCCESS", "User created successfully.", {
+    const activationToken = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "25m" }
+    );
+
+    await sendActivationEmail(user.email, activationToken);
+
+    return apiResponse(res, true, "USER_CREATED_SUCCESS", "User created successfully. Check your email for activation link.", {
       id: user.id,
       fullName: user.fullName,
       username: user.username,
@@ -118,17 +163,37 @@ exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     // 1️⃣ Validações individuais
-    if (!email) return apiResponse(res, false, "MISSING_EMAIL", "The 'Email' field is required.", null, 400);
-    if (!isValidEmail(email)) return apiResponse(res, false, "INVALID_EMAIL", "The provided email is not valid.", null, 400);
-    if (!password) return apiResponse(res, false, "MISSING_PASSWORD", "The 'Password' field is required.", null, 400);
+    if (!email)
+      return apiResponse(res, false, "MISSING_EMAIL", "The 'Email' field is required.", null, 400);
+    if (!isValidEmail(email))
+      return apiResponse(res, false, "INVALID_EMAIL", "The provided email is not valid.", null, 400);
+    if (!password)
+      return apiResponse(res, false, "MISSING_PASSWORD", "The 'Password' field is required.", null, 400);
 
     // 2️⃣ Verifica se o usuário existe
     const user = await User.findOne({ where: { email } });
-    if (!user) return apiResponse(res, false, "USER_NOT_FOUND", "No user found with this email.", null, 404);
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "No user found with this email.", null, 404);
+
+    // 2.1️⃣ Verifica se o usuário está ativo
+    if (!user.isActive) {
+      // Gera token de ativação
+      const activationToken = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "25m" }
+      );
+
+      // Envia e-mail de ativação
+      await sendActivationEmail(user.email, activationToken);
+
+      return apiResponse(res, false, "USER_NOT_ACTIVE", "User account is not activated. Check your email for activation link.", null, 403);
+    }
 
     // 3️⃣ Verifica a senha
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return apiResponse(res, false, "INVALID_PASSWORD", "Incorrect password.", null, 401);
+    if (!isMatch)
+      return apiResponse(res, false, "INVALID_PASSWORD", "Incorrect password.", null, 401);
 
     // 4️⃣ Gera JWT
     const token = jwt.sign(
@@ -137,8 +202,7 @@ exports.loginUser = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-
-    // 5 Retorna dados do usuário (pode incluir token se usar JWT)
+    // 5️⃣ Retorna dados do usuário
     return apiResponse(res, true, "LOGIN_SUCCESS", "Logged in successfully.", {
       id: user.id,
       fullName: user.fullName,
@@ -380,5 +444,36 @@ exports.updatePassword = async (req, res) => {
   } catch (error) {
     console.error(error);
     return apiResponse(res, false, "SERVER_ERROR", "Error updating password.", null, 500);
+  }
+};
+
+exports.activateUser = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token)
+      return apiResponse(res, false, "MISSING_TOKEN", "Activation token is required.", null, 400);
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return apiResponse(res, false, "INVALID_TOKEN", "Activation token is invalid or expired.", null, 401);
+    }
+
+    const user = await User.findByPk(decoded.id);
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+
+    if (user.isActive)
+      return apiResponse(res, false, "ALREADY_ACTIVE", "User account is already active.", null, 400);
+
+    await user.update({ isActive: true });
+
+    return apiResponse(res, true, "USER_ACTIVATED", "User account activated successfully.", null, 200);
+
+  } catch (error) {
+    console.error(error);
+    return apiResponse(res, false, "SERVER_ERROR", "Error activating user.", null, 500);
   }
 };

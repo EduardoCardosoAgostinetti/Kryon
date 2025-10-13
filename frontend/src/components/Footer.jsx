@@ -15,8 +15,6 @@ function Footer() {
         <div className="footer-section">
           <h3>Features</h3>
           <p>Personalized Workouts</p>
-          <p>Diet Plans</p>
-          <p>Progress Tracking</p>
           <p>Motivational Tips</p>
         </div>
 
