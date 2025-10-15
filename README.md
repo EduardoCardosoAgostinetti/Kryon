@@ -84,11 +84,13 @@ The app will start at **http://localhost:5173** by default.
 | `/signin` | User login |
 | `/signup` | Account creation |
 | `/forgot-password` | Password recovery form |
-| `/reset-password` | Password reset page |
+| `/reset-password` | Password reset page (requires token)|
+|`/activate-account` | Activate account pages (requires token) |
 | `/dashboard` | Protected user dashboard (requires login) |
 | `/dashboard/settings` | Protected user settings (requires login) |
 | `/dashboard/workouts` | Protected user workouts (requires login) |
-`/dashboard/new` | Protected user create new workouts (requires login) |
+|`/dashboard/new` | Protected user create new workouts (requires login) |
+
 
 ---
 
@@ -99,7 +101,6 @@ The app will start at **http://localhost:5173** by default.
 - **Axios** — API communication
 - **Lucide React** — Modern icons
 - **Vite** — Build and dev server
-- **Playwright** — Frontend testing
 
 ---
 
@@ -111,7 +112,7 @@ The app will start at **http://localhost:5173** by default.
 - **JWT Authentication**
 - **Bcrypt.js** — Password hashing
 - **Nodemailer** — Email service (forgot/reset password)
-- **Playwright + Jest** — Automated tests
+- **Supertest + Jest** — Automated tests
 
 ---
 
