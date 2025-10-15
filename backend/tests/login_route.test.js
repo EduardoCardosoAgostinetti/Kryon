@@ -13,7 +13,8 @@ beforeAll(async () => {
     fullName: "Joao Da Silva 2",
     username: "joaosilva 2",
     email: "joao2@email.com",
-    password: hashedPassword
+    password: hashedPassword,
+    isActive: true,
   });
 });
 
