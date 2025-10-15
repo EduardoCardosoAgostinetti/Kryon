@@ -17,7 +17,7 @@ function Dashboard() {
           <nav className="sidebar-nav">
             <a
               href="#"
-              onClick={() => navigate("/dashboard/workouts")}
+              onClick={() => navigate("/kryon/dashboard/workouts")}
               className={currentPath.includes("workouts") ? "active" : ""}
             >
               <Dumbbell size={22} />
@@ -25,7 +25,7 @@ function Dashboard() {
             </a>
             <a
               href="#"
-              onClick={() => navigate("/dashboard/new")}
+              onClick={() => navigate("/kryon/dashboard/new")}
               className={currentPath.includes("new") ? "active" : ""}
             >
               <PlusCircle size={22} />
@@ -33,7 +33,7 @@ function Dashboard() {
             </a>
             <a
               href="#"
-              onClick={() => navigate("/dashboard/settings")}
+              onClick={() => navigate("/kryon/dashboard/settings")}
               className={currentPath.includes("settings") ? "active" : ""}
             >
               <SettingsIcon size={22} />
@@ -52,21 +52,21 @@ function Dashboard() {
       <nav className="bottom-nav">
         <button
           className={`bottom-btn ${currentPath.includes("workouts") ? "active" : ""}`}
-          onClick={() => navigate("/dashboard/workouts")}
+          onClick={() => navigate("/kryon/dashboard/workouts")}
         >
           <Dumbbell size={24} />
           <span>Workouts</span>
         </button>
         <button
           className={`bottom-btn ${currentPath.includes("new") ? "active" : ""}`}
-          onClick={() => navigate("/dashboard/new")}
+          onClick={() => navigate("/kryon/dashboard/new")}
         >
           <PlusCircle size={24} />
           <span>New</span>
         </button>
         <button
           className={`bottom-btn ${currentPath.includes("settings") ? "active" : ""}`}
-          onClick={() => navigate("/dashboard/settings")}
+          onClick={() => navigate("/kryon/dashboard/settings")}
         >
           <SettingsIcon size={24} />
           <span>Settings</span>

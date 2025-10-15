@@ -32,7 +32,7 @@ async function sendResetEmail(toEmail, resetToken) {
     },
   });
   // Link de redefinição (ajuste conforme sua rota frontend)
-  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+  const resetLink = `${process.env.FRONTEND_URL}/kryon/reset-password?token=${resetToken}`;
 
   // Corpo do e-mail
   const mailOptions = {
@@ -70,7 +70,7 @@ async function sendActivationEmail(toEmail, activationToken) {
     },
   });
 
-  const activationLink = `${process.env.FRONTEND_URL}/activate-account?token=${activationToken}`;
+  const activationLink = `${process.env.FRONTEND_URL}/kryon/activate-account?token=${activationToken}`;
 
   const mailOptions = {
     from: `"Suporte - Kryon" <${process.env.SMTP_USER}>`,

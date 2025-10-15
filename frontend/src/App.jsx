@@ -18,15 +18,15 @@ function App() {
   return (
     <Router>      
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/activate-account" element={<ActivateAccount />} />
+        <Route path="/kryon/home" element={<Home />} />
+        <Route path="/kryon/signin" element={<SignIn />} />
+        <Route path="/kryon/signup" element={<SignUp />} />
+        <Route path="/kryon/forgot-password" element={<ForgotPassword />} />
+        <Route path="/kryon/reset-password" element={<ResetPassword />} />
+        <Route path="/kryon/activate-account" element={<ActivateAccount />} />
 
         {/* Rota protegida */}
-        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}>
+        <Route path="/kryon/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}>
           <Route path="workouts" element={<PrivateRoute><Workouts /></PrivateRoute>} />
           <Route path="new" element={<PrivateRoute><NewWorkout /></PrivateRoute> } />
           <Route path="settings" element={<Settings />} />

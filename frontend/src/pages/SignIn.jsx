@@ -30,7 +30,7 @@ function SignIn() {
 
       localStorage.setItem("token", data.data.token);
 
-      navigate("/dashboard/workouts");
+      navigate("/kryon/dashboard/workouts");
       console.log(data.data.token);
     } catch (error) {
       if (error.response) {
@@ -79,9 +79,9 @@ function SignIn() {
           </form>
 
           <div className="signin-links">
-            <a href="/forgot-password">Forgot your password?</a>
+            <a href="/kryon/forgot-password">Forgot your password?</a>
             <p>
-              Don’t have an account? <a href="/signup">Sign Up</a>
+              Don’t have an account? <a href="/kryon/signup">Sign Up</a>
             </p>
           </div>
         </div>

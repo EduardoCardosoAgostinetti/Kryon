@@ -34,7 +34,7 @@ function Settings() {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        navigate("/signin");
+        navigate("/kryon/signin");
     };
 
     const openEditModal = (field, value) => {

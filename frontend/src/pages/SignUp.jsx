@@ -61,7 +61,7 @@ function SignUp() {
           message={alert.message}
           onClose={() => {
             setAlert({ type: "", message: "" });
-            if (alert.type === "success") navigate("/signin");
+            if (alert.type === "success") navigate("/kryon/signin");
           }}
         />
       )}
@@ -114,7 +114,7 @@ function SignUp() {
 
           <div className="signup-links">
             <p>
-              Already have an account? <a href="/signin">Sign In</a>
+              Already have an account? <a href="/kryon/signin">Sign In</a>
             </p>
           </div>
         </div>

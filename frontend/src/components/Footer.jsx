@@ -7,9 +7,9 @@ function Footer() {
       <div className="footer-sections">
         <div className="footer-section">
           <h3>Quick Links</h3>
-          <Link to="/">Home</Link>
-          <Link to="/signin">Sign In</Link>
-          <Link to="/signup">Sign Up</Link>
+          <Link to="/kryon/home">Home</Link>
+          <Link to="/kryon/signin">Sign In</Link>
+          <Link to="/kryon/signup">Sign Up</Link>
         </div>
 
         <div className="footer-section">

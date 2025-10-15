@@ -29,11 +29,11 @@ function ActivateAccount() {
                 if (data.success) {
                     setMessage("Account activated successfully! Redirecting to login...");
                     setStatus("success");
-                    setTimeout(() => navigate("/signin"), 3000);
+                    setTimeout(() => navigate("/kryon/signin"), 3000);
                 } else if (data.code === "ALREADY_ACTIVE") {
                     setMessage("Your account is already active. Redirecting to login...");
                     setStatus("warning");
-                    setTimeout(() => navigate("/signin"), 3000);
+                    setTimeout(() => navigate("/kryon/signin"), 3000);
                 } else {
                     setMessage(data.message);
                     setStatus("error");

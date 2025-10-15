@@ -17,7 +17,7 @@ function Home() {
                     <div className="hero-text">
                         <h1>Transforme seu treino com Kryon</h1>
                         <p>Monitore seus progressos, treinos e dietas em um único lugar.</p>
-                        <Link to="/signup" className="cta-btn">Comece Agora</Link>
+                        <Link to="/kryon/signup" className="cta-btn">Comece Agora</Link>
                     </div>
                     <div className="hero-image">
                         <img src={HeroImage} alt="Fitness" />

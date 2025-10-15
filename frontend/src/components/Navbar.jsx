@@ -16,31 +16,31 @@ function Navbar() {
   return (
     <>
       <nav className="navbar">
-        <div className="logo" onClick={() => navigate("/")}>
+        <div className="logo" onClick={() => navigate("/kryon/home")}>
           <img src={WhiteLogo} alt="Kryon Logo" />
         </div>
 
         <div className={`links ${isOpen ? "open" : ""}`}>
           {!isLogged ? (
             <>
-              <Link to="/" className="nav-btn">
+              <Link to="/kryon/home" className="nav-btn">
                 <Home size={18} />
                 <span>Home</span>
               </Link>
 
-              <Link to="/signin" className="nav-btn">
+              <Link to="/kryon/signin" className="nav-btn">
                 <LogIn size={18} />
                 <span>Sign In</span>
               </Link>
 
-              <Link to="/signup" className="nav-btn signup">
+              <Link to="/kryon/signup" className="nav-btn signup">
                 <UserPlus size={18} />
                 <span>Sign Up</span>
               </Link>
             </>
           ) : (
             <>
-              <Link to="/dashboard/workouts" className="nav-btn">
+              <Link to="/kryon/dashboard/workouts" className="nav-btn">
                 <LayoutDashboard size={18} />
                 <span>Dashboard</span>
               </Link>

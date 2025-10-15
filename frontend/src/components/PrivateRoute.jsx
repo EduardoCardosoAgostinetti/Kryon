@@ -5,7 +5,7 @@ function PrivateRoute({ children }) {
 
   // Se não tiver token, redireciona para o login
   if (!token) {
-    return <Navigate to="/signin" replace />;
+    return <Navigate to="/kryon/signin" replace />;
   }
 
   // Caso tenha token, renderiza o componente normalmente

@@ -48,7 +48,7 @@ function ForgotPassword() {
                     message={alert.message}
                     onClose={() => {
                         if (alert.type === "success") {
-                            navigate("/signin"); // redireciona após sucesso
+                            navigate("/kryon/signin"); // redireciona após sucesso
                         }
                         setAlert({ type: "", message: "" });
                     }}
@@ -74,7 +74,7 @@ function ForgotPassword() {
                     </form>
 
                     <div className="forgot-links">
-                        <a href="/signin">Back to Sign In</a>
+                        <a href="/kryon/signin">Back to Sign In</a>
                     </div>
                 </div>
             </div>
