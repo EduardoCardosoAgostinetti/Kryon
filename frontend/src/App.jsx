@@ -11,6 +11,7 @@ import Workouts from "./pages/Workouts";
 import NewWorkout from "./pages/NewWorkout";
 import Settings from "./pages/Settings";
 import ActivateAccount from "./pages/ActivateAccount";
+import Terms from "./pages/Terms";
 
 
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/kryon/forgot-password" element={<ForgotPassword />} />
         <Route path="/kryon/reset-password" element={<ResetPassword />} />
         <Route path="/kryon/activate-account" element={<ActivateAccount />} />
+        <Route path="/kryon/terms" element={<Terms />} />
 
         {/* Rota protegida */}
         <Route path="/kryon/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}>

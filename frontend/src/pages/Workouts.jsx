@@ -36,43 +36,48 @@ function Workouts() {
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("pt-BR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  const date = new Date(dateString);
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true, // exibe AM/PM
+  });
+};
+
 
   const fetchWorkouts = async () => {
-    const userId = getUserId();
-    if (!userId)
-      return setAlert({ type: "error", message: "User not identified!" });
+  const userId = getUserId();
+  if (!userId)
+    return setAlert({ type: "error", message: "User not identified!" });
 
-    try {
-      setLoading(true);
-      const response = await api.get(`/workout/user/${userId}`);
-      const userData = response.data.data;
-      const workoutsData = Array.isArray(userData?.Workouts)
-        ? userData.Workouts.map((w) => ({
+  try {
+    setLoading(true);
+    const response = await api.get(`/workout/user/${userId}`);
+    const userData = response.data.data;
+    const workoutsData = Array.isArray(userData?.Workouts)
+      ? userData.Workouts.map((w) => ({
           ...w,
           data: typeof w.data === "string" ? JSON.parse(w.data) : w.data,
         }))
-        : [];
-      setWorkouts(workoutsData);
-    } catch (error) {
-      console.error(error);
-      setAlert({
-        type: "error",
-        message:
-          error.response?.data?.message || "Error loading workout plans!",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      : [];
+
+    // 🔥 Coloca a última ficha criada primeiro
+    setWorkouts(workoutsData.reverse());
+  } catch (error) {
+    console.error(error);
+    setAlert({
+      type: "error",
+      message:
+        error.response?.data?.message || "Error loading workout plans!",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchWorkouts();
@@ -191,9 +196,7 @@ function Workouts() {
         {workouts.map((workout, index) => (
           <div key={index} className="workout-card">
             <div className="workout-header">
-              <h3>
-                <Dumbbell size={18} color="#2ecc71" /> Workout #{index + 1}
-              </h3>
+              
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <div className="workout-date">
                   <Calendar size={16} color="#ff7f50" />

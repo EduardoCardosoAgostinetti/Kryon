@@ -48,15 +48,32 @@ exports.getUserWorkouts = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const user = await User.findByPk(userId, { include: Workout });
-    if (!user) return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+    const user = await User.findByPk(userId, {
+      include: [
+        {
+          model: Workout,
+          order: [["createdAt", "DESC"]], // 🔥 ordena pelos mais recentes primeiro
+        },
+      ],
+    });
 
-    return apiResponse(res, true, "WORKOUTS_FOUND", "Workout plans retrieved successfully.", user, 200);
+    if (!user)
+      return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+
+    return apiResponse(
+      res,
+      true,
+      "WORKOUTS_FOUND",
+      "Workout plans retrieved successfully.",
+      user,
+      200
+    );
   } catch (error) {
     console.error(error);
     return apiResponse(res, false, "SERVER_ERROR", "Error retrieving workout plans.", null, 500);
   }
 };
+
 
 exports.deleteWorkout = async (req, res) => {
   try {

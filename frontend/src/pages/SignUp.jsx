@@ -103,7 +103,7 @@ function SignUp() {
             <div className="form-check">
               <input type="checkbox" id="terms" />
               <label htmlFor="terms">
-                I accept the <a href="#">terms of use</a>.
+                I accept the <a href="/kryon/terms">terms of use</a>.
               </label>
             </div>
 

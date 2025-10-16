@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dumbbell, PlusCircle, Save } from "lucide-react";
+import { Dumbbell, PlusCircle, Save, Trash2 } from "lucide-react";
 import * as jwtDecode from "jwt-decode";
 import api from "../config/api";
 import Alerts from "../components/Alerts";
@@ -36,10 +36,18 @@ function NewWorkout() {
   };
 
   const addExercise = () => {
-    if (!selectedGroup) return setAlert({ type: "error", message: "Select a muscle group first!" });
+    if (!selectedGroup)
+      return setAlert({ type: "error", message: "Select a muscle group first!" });
     const updated = { ...workout };
     if (!updated[selectedGroup]) updated[selectedGroup] = [];
     updated[selectedGroup].push({ name: "", series: [{ weight: "", reps: "" }] });
+    setWorkout(updated);
+  };
+
+  const deleteExercise = (group, exIndex) => {
+    const updated = { ...workout };
+    updated[group].splice(exIndex, 1);
+    if (updated[group].length === 0) delete updated[group];
     setWorkout(updated);
   };
 
@@ -61,10 +69,21 @@ function NewWorkout() {
     setWorkout(updated);
   };
 
+  const deleteSeries = (group, exIndex, sIndex) => {
+    const updated = { ...workout };
+    updated[group][exIndex].series.splice(sIndex, 1);
+    setWorkout(updated);
+  };
+
   const saveWorkout = async () => {
     const userId = getUserId();
-    if (!userId) return setAlert({ type: "error", message: "User not identified!" });
-    if (Object.keys(workout).length === 0) return setAlert({ type: "error", message: "Add at least one exercise!" });
+    if (!userId)
+      return setAlert({ type: "error", message: "User not identified!" });
+    if (Object.keys(workout).length === 0)
+      return setAlert({
+        type: "error",
+        message: "Add at least one exercise!",
+      });
 
     try {
       setLoading(true);
@@ -74,7 +93,10 @@ function NewWorkout() {
       setSelectedGroup("");
     } catch (error) {
       console.error(error);
-      setAlert({ type: "error", message: error.response?.data?.message || "Error creating workout!" });
+      setAlert({
+        type: "error",
+        message: error.response?.data?.message || "Error creating workout!",
+      });
     } finally {
       setLoading(false);
     }
@@ -84,7 +106,11 @@ function NewWorkout() {
     <div className="new-workout-wrapper">
       {loading && <Loading message="Saving workout..." />}
       {alert.message && (
-        <Alerts type={alert.type} message={alert.message} onClose={() => setAlert({ type: "", message: "" })} />
+        <Alerts
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert({ type: "", message: "" })}
+        />
       )}
 
       <div className="new-workout-card">
@@ -94,10 +120,15 @@ function NewWorkout() {
 
         <div className="form-group">
           <label>Muscle group</label>
-          <select value={selectedGroup} onChange={(e) => setSelectedGroup(e.target.value)}>
+          <select
+            value={selectedGroup}
+            onChange={(e) => setSelectedGroup(e.target.value)}
+          >
             <option value="">Select a muscle group</option>
             {muscleGroups.map((group) => (
-              <option key={group} value={group}>{group}</option>
+              <option key={group} value={group}>
+                {group}
+              </option>
             ))}
           </select>
           <button className="add-btn" onClick={addExercise}>
@@ -114,32 +145,57 @@ function NewWorkout() {
             <h3>{group}</h3>
             {exercises.map((ex, exIndex) => (
               <div key={exIndex} className="exercise-card">
-                <input
-                  type="text"
-                  placeholder="Exercise name"
-                  value={ex.name}
-                  onChange={(e) => updateExercise(group, exIndex, "name", e.target.value)}
-                  className="exercise-name"
-                />
+                <div className="exercise-header">
+                  <input
+                    type="text"
+                    placeholder="Exercise name"
+                    value={ex.name}
+                    onChange={(e) =>
+                      updateExercise(group, exIndex, "name", e.target.value)
+                    }
+                    className="exercise-name"
+                  />
+                  <button
+                    className="delete-exercise"
+                    onClick={() => deleteExercise(group, exIndex)}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+
                 {ex.series.map((serie, sIndex) => (
                   <div key={sIndex} className="series-row">
                     <input
                       type="number"
                       placeholder="Weight (kg)"
                       value={serie.weight}
-                      onChange={(e) => updateSeries(group, exIndex, sIndex, "weight", e.target.value)}
+                      onChange={(e) =>
+                        updateSeries(group, exIndex, sIndex, "weight", e.target.value)
+                      }
                       className="series-input"
                     />
                     <input
                       type="number"
                       placeholder="Reps"
                       value={serie.reps}
-                      onChange={(e) => updateSeries(group, exIndex, sIndex, "reps", e.target.value)}
+                      onChange={(e) =>
+                        updateSeries(group, exIndex, sIndex, "reps", e.target.value)
+                      }
                       className="series-input"
                     />
+                    <button
+                      className="delete-series"
+                      onClick={() => deleteSeries(group, exIndex, sIndex)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 ))}
-                <button className="add-series" onClick={() => addSeries(group, exIndex)}>
+
+                <button
+                  className="add-series"
+                  onClick={() => addSeries(group, exIndex)}
+                >
                   + Add Set
                 </button>
               </div>
@@ -285,9 +341,35 @@ function NewWorkout() {
           .new-workout-card { padding: 24px; }
           .series-row { flex-direction: row; }
         }
+
+        .exercise-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .delete-exercise {
+          background: none;
+          border: none;
+          color: #ff4d4d;
+          cursor: pointer;
+          padding: 4px;
+          transition: 0.2s;
+        }
+        .delete-exercise:hover { color: #ff6b6b; }
+
+        .delete-series {
+          background: none;
+          border: none;
+          color: #ff4d4d;
+          cursor: pointer;
+          transition: 0.2s;
+        }
+        .delete-series:hover { color: #ff6b6b; }
       `}</style>
     </div>
   );
 }
 
 export default NewWorkout;
+
