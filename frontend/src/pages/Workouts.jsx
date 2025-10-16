@@ -36,7 +36,6 @@ function Workouts() {
     "Abs",
   ];
 
-
   const getUserId = () => {
     const token = localStorage.getItem("token");
     if (!token) return null;
@@ -57,10 +56,9 @@ function Workouts() {
       day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
-      hour12: true, // exibe AM/PM
+      hour12: true,
     });
   };
-
 
   const fetchWorkouts = async () => {
     const userId = getUserId();
@@ -78,7 +76,7 @@ function Workouts() {
         }))
         : [];
 
-      // 🔥 Coloca a última ficha criada primeiro
+      // 🔥 Show the newest workout first
       setWorkouts(workoutsData.reverse());
     } catch (error) {
       console.error(error);
@@ -92,12 +90,11 @@ function Workouts() {
     }
   };
 
-
   useEffect(() => {
     fetchWorkouts();
   }, []);
 
-  // --- EDIÇÃO ---
+  // --- EDIT ---
   const handleEdit = (workout) => {
     setEditingWorkout(workout);
     setEditData({ ...workout, data: { ...workout.data } });
@@ -123,7 +120,6 @@ function Workouts() {
     setEditData({ ...editData, data: updatedData });
   };
 
-
   const addSerie = (group, exIndex) => {
     const updatedData = { ...editData.data };
     if (!updatedData[group][exIndex].series)
@@ -141,7 +137,7 @@ function Workouts() {
       });
       setAlert({
         type: "success",
-        message: "Treino atualizado com sucesso!",
+        message: "Workout updated successfully!",
       });
       setEditingWorkout(null);
       fetchWorkouts();
@@ -149,7 +145,7 @@ function Workouts() {
       console.error(error);
       setAlert({
         type: "error",
-        message: error.response?.data?.message || "Erro ao atualizar treino.",
+        message: error.response?.data?.message || "Error updating workout.",
       });
     } finally {
       setLoading(false);
@@ -212,7 +208,6 @@ function Workouts() {
         {workouts.map((workout, index) => (
           <div key={index} className="workout-card">
             <div className="workout-header">
-
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <div className="workout-date">
                   <Calendar size={16} color="#ff7f50" />
@@ -256,7 +251,7 @@ function Workouts() {
         ))}
       </div>
 
-      {/* --- Modal de edição --- */}
+      {/* --- EDIT MODAL --- */}
       {editingWorkout && editData && (
         <div className="modal-overlay">
           <div className="modal">
@@ -377,9 +372,7 @@ function Workouts() {
                   </button>
                 </div>
               ))}
-
             </div>
-
 
             <button onClick={saveChanges} className="save-btn">
               <Save size={16} /> Save Changes
@@ -388,7 +381,7 @@ function Workouts() {
         </div>
       )}
 
-      {/* --- Modal de confirmação de delete --- */}
+      {/* --- DELETE CONFIRM MODAL --- */}
       {showDeleteModal && deleteWorkout && (
         <div className="modal-overlay">
           <div className="modal">
@@ -425,9 +418,9 @@ function Workouts() {
         </div>
       )}
 
-      {/* --- estilos --- */}
+      {/* --- STYLES (unchanged) --- */}
       <style>{`
-  /* --- BOTOES --- */
+         /* --- BOTOES --- */
   .edit-btn {
     background: #3a3a3f;
     border: none;
@@ -747,8 +740,7 @@ function Workouts() {
       gap: 6px;
     }
   }
-`}</style>
-
+      `}</style>
     </div>
   );
 }
