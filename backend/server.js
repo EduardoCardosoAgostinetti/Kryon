@@ -6,7 +6,7 @@ const port = process.env.API_PORT;
 
 async function startServer() {
   await ensureDatabase();
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
   app.listen(port, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${port}`);
   });

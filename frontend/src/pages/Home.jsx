@@ -6,52 +6,49 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 function Home() {
-    return (
+  return (
+    <div>
+      <Navbar />
+      <div className="home">
 
-        <div>
-            <Navbar />
-            <div className="home">
+        {/* Hero Section */}
+        <section className="hero">
+          <div className="hero-text">
+            <h1>Transform Your Workout with Kryon</h1>
+            <p>Track your progress, workouts, and diets all in one place.</p>
+            <Link to="/kryon/signup" className="cta-btn">Get Started</Link>
+          </div>
+          <div className="hero-image">
+            <img src={HeroImage} alt="Fitness" />
+          </div>
+        </section>
 
-                {/* Hero Section */}
-                <section className="hero">
-                    <div className="hero-text">
-                        <h1>Transforme seu treino com Kryon</h1>
-                        <p>Monitore seus progressos, treinos e dietas em um único lugar.</p>
-                        <Link to="/kryon/signup" className="cta-btn">Comece Agora</Link>
-                    </div>
-                    <div className="hero-image">
-                        <img src={HeroImage} alt="Fitness" />
-                    </div>
-                </section>
+        {/* Motivational Section */}
+        <section className="motivation">
+          <h2>Daily Motivation</h2>
+          <p>Don’t wait for the perfect moment. Turn every workout into progress!</p>
+        </section>
 
-                {/* Motivational Section */}
-                <section className="motivation">
-                    <h2>Motivação diária</h2>
-                    <p>Não espere pelo momento perfeito. Transforme cada treino em progresso!</p>
-                </section>
+        {/* Features Section */}
+        <section className="features">
+          <h2>Features</h2>
+          <div className="feature-cards">
+            <div className="card">
+              <img src={Feature1} alt="Personalized Workouts" />
+              <h3>Personalized Workouts</h3>
+              <p>Create workouts tailored to your level and goals.</p>
+            </div>
 
-                {/* Features Section */}
-                <section className="features">
-                    <h2>Funcionalidades</h2>
-                    <div className="feature-cards">
-                        <div className="card">
-                            <img src={Feature1} alt="Treinos Personalizados" />
-                            <h3>Treinos Personalizados</h3>
-                            <p>Crie treinos adaptados ao seu nível e objetivos.</p>
-                        </div>
-                        
-                        <div className="card">
-                            <img src={Feature2} alt="Monitoramento de Progresso" />
-                            <h3>Monitoramento de Progresso</h3>
-                            <p>Visualize seu desempenho de perto.</p>
-                        </div>
-                    </div>
-                </section>
+            <div className="card">
+              <img src={Feature2} alt="Progress Tracking" />
+              <h3>Progress Tracking</h3>
+              <p>Keep a close eye on your performance and growth.</p>
+            </div>
+          </div>
+        </section>
 
-
-
-                <style>
-                    {`
+        <style>
+          {`
           .home {
             font-family: 'Arial', sans-serif;
             color: #333;
@@ -125,7 +122,6 @@ function Home() {
             background-color: #f5f5f5;
             padding: 20px;
             border-radius: 10px;
-            
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.3s;
@@ -158,7 +154,7 @@ function Home() {
             margin-bottom: 20px;
           }
 
-          /* Responsivo */
+          /* Responsive */
           @media (max-width: 768px) {
             .hero {
               flex-direction: column;
@@ -166,12 +162,11 @@ function Home() {
             }
           }
         `}
-                </style>
-            </div>
-            <Footer />
-        </div>
-
-    );
+        </style>
+      </div>
+      <Footer />
+    </div>
+  );
 }
 
 export default Home;
