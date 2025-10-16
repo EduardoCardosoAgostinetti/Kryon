@@ -15,6 +15,7 @@ import Alerts from "../components/Alerts";
 import Loading from "../components/Loading";
 
 function Workouts() {
+  const [selectedGroup, setSelectedGroup] = useState("");
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({ type: "", message: "" });
@@ -22,6 +23,19 @@ function Workouts() {
   const [editData, setEditData] = useState(null);
   const [deleteWorkout, setDeleteWorkout] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const muscleGroups = [
+    "Chest",
+    "Back",
+    "Shoulders",
+    "Biceps",
+    "Triceps",
+    "Quadriceps",
+    "Hamstrings",
+    "Calves",
+    "Abs",
+  ];
+
 
   const getUserId = () => {
     const token = localStorage.getItem("token");
@@ -36,47 +50,47 @@ function Workouts() {
   };
 
   const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleString("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true, // exibe AM/PM
-  });
-};
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true, // exibe AM/PM
+    });
+  };
 
 
   const fetchWorkouts = async () => {
-  const userId = getUserId();
-  if (!userId)
-    return setAlert({ type: "error", message: "User not identified!" });
+    const userId = getUserId();
+    if (!userId)
+      return setAlert({ type: "error", message: "User not identified!" });
 
-  try {
-    setLoading(true);
-    const response = await api.get(`/workout/user/${userId}`);
-    const userData = response.data.data;
-    const workoutsData = Array.isArray(userData?.Workouts)
-      ? userData.Workouts.map((w) => ({
+    try {
+      setLoading(true);
+      const response = await api.get(`/workout/user/${userId}`);
+      const userData = response.data.data;
+      const workoutsData = Array.isArray(userData?.Workouts)
+        ? userData.Workouts.map((w) => ({
           ...w,
           data: typeof w.data === "string" ? JSON.parse(w.data) : w.data,
         }))
-      : [];
+        : [];
 
-    // 🔥 Coloca a última ficha criada primeiro
-    setWorkouts(workoutsData.reverse());
-  } catch (error) {
-    console.error(error);
-    setAlert({
-      type: "error",
-      message:
-        error.response?.data?.message || "Error loading workout plans!",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+      // 🔥 Coloca a última ficha criada primeiro
+      setWorkouts(workoutsData.reverse());
+    } catch (error) {
+      console.error(error);
+      setAlert({
+        type: "error",
+        message:
+          error.response?.data?.message || "Error loading workout plans!",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   useEffect(() => {
@@ -102,11 +116,13 @@ function Workouts() {
   };
 
   const addExercise = (group) => {
+    if (!group) return;
     const updatedData = { ...editData.data };
     if (!updatedData[group]) updatedData[group] = [];
-    updatedData[group].push({ name: '', series: [] });
+    updatedData[group].push({ name: "", series: [{ weight: "", reps: "" }] });
     setEditData({ ...editData, data: updatedData });
   };
+
 
   const addSerie = (group, exIndex) => {
     const updatedData = { ...editData.data };
@@ -196,7 +212,7 @@ function Workouts() {
         {workouts.map((workout, index) => (
           <div key={index} className="workout-card">
             <div className="workout-header">
-              
+
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <div className="workout-date">
                   <Calendar size={16} color="#ff7f50" />
@@ -255,9 +271,37 @@ function Workouts() {
             </div>
 
             <div className="modal-body">
+              <div className="add-exercise-section">
+                <select
+                  value={selectedGroup}
+                  onChange={(e) => setSelectedGroup(e.target.value)}
+                >
+                  <option value="">Select a muscle group</option>
+                  {muscleGroups.map((group) => (
+                    <option key={group} value={group}>{group}</option>
+                  ))}
+                </select>
+                <button onClick={() => addExercise(selectedGroup)} className="add-exercise-btn">
+                  <Plus size={14} /> Add Exercise
+                </button>
+              </div>
+
               {Object.entries(editData.data).map(([group, exercises]) => (
                 <div key={group} className="modal-group">
-                  <h4>{group}</h4>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <h4>{group}</h4>
+                    <button
+                      className="remove-btn"
+                      onClick={() => {
+                        const updatedData = { ...editData.data };
+                        delete updatedData[group];
+                        setEditData({ ...editData, data: updatedData });
+                      }}
+                    >
+                      Remove Group
+                    </button>
+                  </div>
+
                   {exercises.map((exercise, exIndex) => (
                     <div key={exIndex} className="modal-exercise">
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -333,6 +377,7 @@ function Workouts() {
                   </button>
                 </div>
               ))}
+
             </div>
 
 
@@ -420,7 +465,25 @@ function Workouts() {
     transition: 0.2s;
   }
   .refresh-btn:hover { background: #4a4a4f; }
+/* --- BOTÃO ADD EXERCISE --- */
+.add-exercise-btn {
+  background: #4caf50; /* Verde para destacar */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: 0.2s;
+}
 
+.add-exercise-btn:hover {
+  background: #66bb6a; /* Verde mais claro ao passar o mouse */
+}
   /* --- WRAPPER --- */
   .user-workouts-wrapper {
     display: flex;
@@ -591,6 +654,56 @@ function Workouts() {
     transition: 0.2s;
   }
   .modal-add-btn:hover, .save-btn:hover { background: #ff9f70; }
+
+      /* --- SEÇÃO DE ADICIONAR EXERCÍCIO --- */
+.add-exercise-section {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.add-exercise-section select {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #20232a;
+  color: white;
+  font-size: 0.95rem;
+  transition: 0.2s;
+}
+
+.add-exercise-section select:focus {
+  border-color: #ff7f50;
+  outline: none;
+}
+
+.add-exercise-section .modal-add-btn {
+  padding: 10px 14px;
+  background: #ff7f50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+  .add-exercise-section .modal-add-btn:hover {
+    background: #ff9f70;
+  }
+
+  /* --- RESPONSIVIDADE --- */
+  @media (max-width: 650px) {
+    .add-exercise-section {
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+
 
   .remove-btn {
     background: #ff4d4d;
