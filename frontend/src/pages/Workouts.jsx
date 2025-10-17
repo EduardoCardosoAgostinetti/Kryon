@@ -482,7 +482,7 @@ function Workouts() {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 20px;
+    padding: 5px;
     min-height: 100vh;
     font-family: 'Segoe UI', sans-serif;
   }
@@ -490,7 +490,7 @@ function Workouts() {
   /* --- CARD PRINCIPAL --- */
   .user-workouts-card {
     background: #20232a;
-    padding: 36px;
+    padding: 12px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     width: 100%;
@@ -508,7 +508,7 @@ function Workouts() {
   .workout-card { 
     background: #2a2d36; 
     border-radius: 10px; 
-    padding: 20px; 
+    padding: 10px; 
     display: flex; 
     flex-direction: column; 
     gap: 16px; 
@@ -529,11 +529,11 @@ function Workouts() {
   }
   .workout-group { 
     background: #333642; 
-    padding: 14px; 
+    padding: 8px; 
     border-radius: 8px; 
   }
   .workout-group h4 { color: #ff7f50; margin-bottom: 8px; font-size: 1.1rem; }
-  .exercise-details { background: #3a3d48; padding: 10px; border-radius: 6px; margin-bottom: 10px; }
+  .exercise-details { background: #3a3d48; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
   .exercise-name { font-weight: 600; color: #fff; margin-bottom: 6px; }
   .no-series { color: #bbb; font-style: italic; }
   ul { list-style: none; padding-left: 10px; margin: 0; }

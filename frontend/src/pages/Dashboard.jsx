@@ -176,7 +176,7 @@ function Dashboard() {
         .dashboard-content {
             flex: 1;
             background: #41454eff;
-            padding: 40px;
+            padding: 5px;
             display: flex;
             flex-direction: column;
             gap: 30px;
@@ -207,7 +207,7 @@ function Dashboard() {
             }
 
             .dashboard-content {
-                padding: 24px;
+                padding: 5px;
                 padding-bottom: 100px;
             }
         }
