@@ -101,6 +101,7 @@ The app will start at **http://localhost:5173** by default.
 - **Axios** — API communication
 - **Lucide React** — Modern icons
 - **Vite** — Build and dev server
+- **PWA** - Progressive Web App
 
 ---
 
