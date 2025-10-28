@@ -53,10 +53,10 @@ exports.getUserWorkouts = async (req, res) => {
         {
           model: Workout,
           as: "Workouts", // 👈 importante se o relacionamento tiver alias
-          order: [["createdAt", "DESC"]], // 🔥 ordena pelas fichas mais recentes
+          order: [["createdAt", "ASC"]], // 🔥 ordena pelas fichas mais recentes
         },
       ],
-      order: [[{ model: Workout, as: "Workouts" }, "createdAt", "DESC"]], // 👈 garante ordenação no include
+      order: [[{ model: Workout, as: "Workouts" }, "createdAt", "ASC"]], // 👈 garante ordenação no include
     });
 
     if (!user) {
