@@ -52,13 +52,23 @@ exports.getUserWorkouts = async (req, res) => {
       include: [
         {
           model: Workout,
-          order: [["createdAt", "DESC"]], // 🔥 ordena pelos mais recentes primeiro
+          as: "Workouts", // 👈 importante se o relacionamento tiver alias
+          order: [["createdAt", "DESC"]], // 🔥 ordena pelas fichas mais recentes
         },
       ],
+      order: [[{ model: Workout, as: "Workouts" }, "createdAt", "DESC"]], // 👈 garante ordenação no include
     });
 
-    if (!user)
-      return apiResponse(res, false, "USER_NOT_FOUND", "User not found.", null, 404);
+    if (!user) {
+      return apiResponse(
+        res,
+        false,
+        "USER_NOT_FOUND",
+        "User not found.",
+        null,
+        404
+      );
+    }
 
     return apiResponse(
       res,
@@ -70,7 +80,14 @@ exports.getUserWorkouts = async (req, res) => {
     );
   } catch (error) {
     console.error(error);
-    return apiResponse(res, false, "SERVER_ERROR", "Error retrieving workout plans.", null, 500);
+    return apiResponse(
+      res,
+      false,
+      "SERVER_ERROR",
+      "Error retrieving workout plans.",
+      null,
+      500
+    );
   }
 };
 
