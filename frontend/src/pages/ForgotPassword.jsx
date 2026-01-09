@@ -48,7 +48,7 @@ function ForgotPassword() {
                     message={alert.message}
                     onClose={() => {
                         if (alert.type === "success") {
-                            navigate("/kryon/signin"); // redireciona após sucesso
+                            navigate("/kryon/signin");
                         }
                         setAlert({ type: "", message: "" });
                     }}

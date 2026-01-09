@@ -1,7 +1,6 @@
 const { Workout, User } = require("../models/associations");
 const apiResponse = require("../config/api_response");
 
-// Criar nova ficha
 exports.createWorkout = async (req, res) => {
   try {
     const { userId, data } = req.body;
@@ -22,7 +21,6 @@ exports.createWorkout = async (req, res) => {
   }
 };
 
-// Editar ficha
 exports.editWorkout = async (req, res) => {
   try {
     const { id } = req.params;
@@ -43,7 +41,6 @@ exports.editWorkout = async (req, res) => {
   }
 };
 
-// Pegar todas as fichas de um usuário
 exports.getUserWorkouts = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -52,11 +49,11 @@ exports.getUserWorkouts = async (req, res) => {
       include: [
         {
           model: Workout,
-          as: "Workouts", // 👈 importante se o relacionamento tiver alias
-          order: [["createdAt", "ASC"]], // 🔥 ordena pelas fichas mais recentes
+          as: "Workouts", 
+          order: [["createdAt", "ASC"]], 
         },
       ],
-      order: [[{ model: Workout, as: "Workouts" }, "createdAt", "ASC"]], // 👈 garante ordenação no include
+      order: [[{ model: Workout, as: "Workouts" }, "createdAt", "ASC"]], 
     });
 
     if (!user) {

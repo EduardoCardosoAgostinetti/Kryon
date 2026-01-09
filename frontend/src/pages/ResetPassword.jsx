@@ -12,7 +12,6 @@ function ResetPassword() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // 🔹 Extrai o token da URL (ex: ?token=abcd...)
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get("token");
 
@@ -66,7 +65,7 @@ function ResetPassword() {
                     message={alert.message}
                     onClose={() => {
                         if (alert.type === "success") {
-                            navigate("/kryon/signin"); // redireciona após sucesso
+                            navigate("/kryon/signin");
                         }
                         setAlert({ type: "", message: "" });
                     }}

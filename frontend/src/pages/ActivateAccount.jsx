@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 
 function ActivateAccount() {
     const [message, setMessage] = useState("Activating account...");
-    const [status, setStatus] = useState("info"); // info, success, warning, error
+    const [status, setStatus] = useState("info");
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const token = searchParams.get("token");

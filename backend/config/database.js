@@ -31,7 +31,6 @@ async function ensureDatabase() {
   }
 }
 
-// Conexão final para a aplicação
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
   host: DB_HOST,
   port: DB_PORT,

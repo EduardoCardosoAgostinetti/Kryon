@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      manifest: false, // usamos o manifest.json manualmente
+      manifest: false,
       workbox: {
         cleanupOutdatedCaches: true,
       },

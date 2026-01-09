@@ -16,8 +16,6 @@ const Workout = sequelize.define("Workout", {
         },
         onDelete: "CASCADE",
     },
-    // Estrutura JSON para armazenar grupos musculares, exercícios e séries
-    //   { group: "Peito", exercises: [{ name: "Supino", series: [{ weight: 40, reps: 12 }] }] }
     data: {
         type: DataTypes.JSON,
         allowNull: false,
