@@ -88,7 +88,6 @@ exports.getUserWorkouts = async (req, res) => {
   }
 };
 
-
 exports.deleteWorkout = async (req, res) => {
   try {
     const { id } = req.params;

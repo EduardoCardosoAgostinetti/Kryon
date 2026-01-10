@@ -6,8 +6,6 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { Op } = require("sequelize");
 
-
-
 function capitalizeFullName(name) {
   return name
     .split(" ")
