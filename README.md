@@ -52,7 +52,7 @@ FRONTEND_URL=http://localhost:5173
 BACKEND_URL=http://localhost:3000
 ```
 
-## Database
+### Database
 
 Create a PostgreSQL database named `kryon`:
 
