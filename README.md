@@ -120,7 +120,7 @@ The app will start at **http://localhost:5173** by default.
 
 ### `/kryon/signin`
 <p align="center">
-  <img src="assets/images/Signin.png" width="400"/>
+  <img src="assets/images/SignIn.png" width="400"/>
 </p>
 
 ---
