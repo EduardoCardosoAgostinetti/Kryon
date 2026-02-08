@@ -6,6 +6,20 @@ This project is a **Fullstack Web Application** consisting of a backend built wi
 
 ## Backend Setup
 
+---
+
+### Technologies
+
+- **Node.js + Express**
+- **Sequelize ORM**
+- **PostgreSQL**
+- **JWT Authentication**
+- **Bcrypt.js** — Password hashing
+- **Nodemailer** — Email service (forgot/reset password)
+- **Supertest + Jest** — Automated tests
+
+---
+
 ### Requirements
 
 - Node.js v20+
@@ -49,10 +63,21 @@ The API will start at **http://localhost:3000**.
 
 ## Frontend Setup
 
-### Requirements
+---
 
+### Technologies
+
+- **React 19**
+- **React Router DOM 7**
+- **Axios** — API communication
+- **Lucide React** — Modern icons
+- **Vite** — Build and dev server
+- **PWA** - Progressive Web App
+
+---
+
+### Requirements
 - Node.js v20+
-- Vite (included in dependencies)
 
 ### Installation
 
@@ -64,6 +89,7 @@ npm install
 ### Run the Development Server
 
 ```bash
+cd frontend
 npm run dev
 ```
 The app will start at **http://localhost:5173** by default.
@@ -72,40 +98,16 @@ The app will start at **http://localhost:5173** by default.
 
 | Route | Description |
 |--------|-------------|
-| `/` | Home page |
-| `/signin` | User login |
-| `/signup` | Account creation |
-| `/forgot-password` | Password recovery form |
-| `/reset-password` | Password reset page (requires token)|
-|`/activate-account` | Activate account pages (requires token) |
-| `/dashboard` | Protected user dashboard (requires login) |
-| `/dashboard/settings` | Protected user settings (requires login) |
-| `/dashboard/workouts` | Protected user workouts (requires login) |
-|`/dashboard/new` | Protected user create new workouts (requires login) |
-
-
----
-
-## Frontend Technologies
-
-- **React 19**
-- **React Router DOM 7**
-- **Axios** — API communication
-- **Lucide React** — Modern icons
-- **Vite** — Build and dev server
-- **PWA** - Progressive Web App
-
----
-
-## Backend Technologies
-
-- **Node.js + Express**
-- **Sequelize ORM**
-- **PostgreSQL**
-- **JWT Authentication**
-- **Bcrypt.js** — Password hashing
-- **Nodemailer** — Email service (forgot/reset password)
-- **Supertest + Jest** — Automated tests
+| `/kryon/home` | Home page |
+| `/kryon/signin` | User login |
+| `/kryon/signup` | Account creation |
+| `/kryon/forgot-password` | Password recovery form |
+| `/kryon/reset-password` | Password reset page (requires token)|
+|`/kryon/activate-account` | Activate account pages (requires token) |
+| `/kryon/dashboard` | Protected user dashboard (requires login) |
+| `/kryon/dashboard/settings` | Protected user settings (requires login) |
+| `/kryon/dashboard/workouts` | Protected user workouts (requires login) |
+|`/kryon/dashboard/new` | Protected user create new workouts (requires login) |
 
 ---
 
