@@ -58,6 +58,7 @@ Create a PostgreSQL database named `kryon`:
 
 ```sql
 CREATE DATABASE kryon;
+```
 
 ### Run API
 
