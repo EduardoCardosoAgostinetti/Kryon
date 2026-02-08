@@ -25,7 +25,7 @@
   "devDependencies": {
     "jest": "^30.2.0",
     "nodemon": "^3.1.10",
-    "sqlite3": "^5.1.7",
+    "sqlite3": "^5.0.2",
     "supertest": "^7.1.4"
   }
 }
