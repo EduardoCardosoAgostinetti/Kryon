@@ -116,6 +116,103 @@ The app will start at **http://localhost:5173** by default.
 | `/kryon/dashboard/workouts` | Protected user workouts (requires login) |
 |`/kryon/dashboard/new` | Protected user create new workouts (requires login) |
 
+## 🖼️ Screens by Route
+
+### `/kryon/signin`
+<p align="center">
+  <img src="assets/images/Signin.png" width="400"/>
+</p>
+
+---
+
+### `/kryon/signup`
+<p align="center">
+  <img src="assets/images/SignUp.png" width="400"/>
+</p>
+
+---
+
+### `/kryon/forgot-password`
+<p align="center">
+  <img src="assets/images/Forgot Password.png" width="400"/>
+</p>
+
+---
+
+### `/kryon/reset-password`
+<p align="center">
+  <img src="assets/images/Reset Password.png" width="400"/>
+</p>
+
+---
+
+### `/kryon/terms-of-use`
+<p align="center">
+  <img src="assets/images/Terms of Use.png" width="400"/>
+</p>
+
+---
+
+### `/kryon/home`
+<p align="center">
+  <img src="assets/images/Home.png" width="420"/>
+  <img src="assets/images/Home 2.png" width="420"/>
+</p>
+
+---
+
+### `/kryon/dashboard`
+<p align="center">
+  <img src="assets/images/Dashboard Workouts.png" width="420"/>
+</p>
+
+---
+
+### `/kryon/dashboard/workouts`
+<p align="center">
+  <img src="assets/images/Dashboard Workouts.png" width="420"/>
+</p>
+
+---
+
+### `/kryon/dashboard/workouts/new`
+<p align="center">
+  <img src="assets/images/New Workout.png" width="420"/>
+</p>
+
+---
+
+### `/kryon/dashboard/workouts/edit/:id`
+<p align="center">
+  <img src="assets/images/Edit Workout.png" width="420"/>
+</p>
+
+---
+
+### `/kryon/dashboard/settings`
+<p align="center">
+  <img src="assets/images/Settings.png" width="420"/>
+  <img src="assets/images/Settings (2).png" width="420"/>
+</p>
+
+---
+
+### `/kryon/logout`
+<p align="center">
+  <img src="assets/images/Logout.png" width="400"/>
+</p>
+
+---
+
+### Extra Actions
+
+<p align="center">
+  <img src="assets/images/Add Exercise.png" width="420"/>
+  <img src="assets/images/Delete Workout.png" width="420"/>
+</p>
+
+---
+
 ---
 
 ## Author
