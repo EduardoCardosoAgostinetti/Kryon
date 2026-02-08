@@ -52,6 +52,13 @@ FRONTEND_URL=http://localhost:5173
 BACKEND_URL=http://localhost:3000
 ```
 
+## Database
+
+Create a PostgreSQL database named `kryon`:
+
+```sql
+CREATE DATABASE kryon;
+
 ### Run API
 
 ```bash
