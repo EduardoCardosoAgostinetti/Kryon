@@ -39,21 +39,13 @@ FRONTEND_URL=http://localhost:5173
 BACKEND_URL=http://localhost:3000
 ```
 
-### Run the API
+### Run API
 
 ```bash
+cd backend
 npm run dev
 ```
 The API will start at **http://localhost:3000**.
-
-### Run Tests
-
-```bash
-npm run test
-```
-This will execute all automated tests configured in GitHub Actions and locally via Supertest and Jest.
-
----
 
 ## Frontend Setup
 
