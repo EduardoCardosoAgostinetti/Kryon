@@ -16,7 +16,6 @@ This project is a **Fullstack Web Application** consisting of a backend built wi
 - **JWT Authentication**
 - **Bcrypt.js** — Password hashing
 - **Nodemailer** — Email service (forgot/reset password)
-- **Supertest + Jest** — Automated tests
 
 ---
 
